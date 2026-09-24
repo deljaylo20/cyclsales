@@ -96,19 +96,38 @@ window.SITE = {
   }
 
   // ---------- Home page ----------
-  const heroEl = document.getElementById("hero-art");
+  const slidesEl = document.getElementById("hero-slides");
   const featured = works.map((w, i) => (w.featured ? i : -1)).filter((i) => i >= 0);
-  if (heroEl && featured.length) {
-    const i = featured[0], w = works[i];
-    heroEl.innerHTML = artHTML(w, { eager: true, ratio: true });
-    heroEl.querySelector(".art").classList.add("hero-art");
-    heroEl.querySelector(".art").addEventListener("click", () => open(featured, i));
-    const hc = document.getElementById("hero-caption");
-    if (hc) hc.innerHTML = `<em>${esc(w.title)}</em>${detail(w) ? " — " + esc(detail(w)) : ""}`;
+  if (slidesEl && featured.length) {
+    const capEl = document.getElementById("hero-caption"), dotsEl = document.getElementById("hero-dots"), pauseEl = document.getElementById("hero-pause");
+    slidesEl.innerHTML = featured.map((i, n) => {
+      const w = works[i];
+      const img = w.src ? `<img src="${esc(w.src)}" alt="${esc(w.title)}" style="object-position:${esc(w.focus || "center")}" ${n ? 'loading="lazy"' : 'fetchpriority="high"'}>` : placeholder(w);
+      return `<button type="button" class="slide${n ? "" : " on"}" data-i="${i}" aria-label="View ${esc(w.title)}" ${n ? 'tabindex="-1"' : ""}>${img}</button>`;
+    }).join("");
+    dotsEl.innerHTML = featured.map((_, n) => `<button type="button" aria-label="Show painting ${n + 1}"${n ? "" : ' aria-current="true"'}></button>`).join("");
+    const slides = [...slidesEl.children], dots = [...dotsEl.children];
+    let cur = 0, timer = null;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let playing = !reduce && featured.length > 1;
+    function go(n) {
+      slides[cur].classList.remove("on"); slides[cur].tabIndex = -1; dots[cur].removeAttribute("aria-current");
+      cur = (n + slides.length) % slides.length;
+      slides[cur].classList.add("on"); slides[cur].tabIndex = 0; dots[cur].setAttribute("aria-current", "true");
+      const w = works[featured[cur]];
+      capEl.innerHTML = `<em>${esc(w.title)}</em>${detail(w) ? " &middot; " + esc(detail(w)) : ""}`;
+    }
+    function tick() { clearInterval(timer); if (playing) timer = setInterval(() => go(cur + 1), 6000); }
+    function setPlaying(p) { playing = p; pauseEl.textContent = p ? "Pause" : "Play"; pauseEl.setAttribute("aria-label", p ? "Pause slideshow" : "Play slideshow"); tick(); }
+    slidesEl.addEventListener("click", (e) => { const s = e.target.closest(".slide"); if (s) open(featured, +s.dataset.i); });
+    dotsEl.addEventListener("click", (e) => { const d = dots.indexOf(e.target); if (d >= 0) { go(d); tick(); } });
+    pauseEl.addEventListener("click", () => setPlaying(!playing));
+    if (featured.length < 2) { dotsEl.hidden = pauseEl.hidden = true; }
+    go(0); setPlaying(playing);
   }
   const selEl = document.getElementById("selected");
   if (selEl) {
-    const picks = featured.slice(1, 7);
+    const picks = featured.slice(0, featured.length >= 6 ? 6 : 4);
     selEl.innerHTML = picks.map((i) => tile(works[i], i, { ratio: true })).join("");
     bind(selEl, picks);
   }

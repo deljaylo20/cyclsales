@@ -23,17 +23,20 @@
 </header>
 <main id="main">
 
-<section class="hero">
-  <div class="wrap hero-grid">
-    <figure style="margin:0">
-      <div id="hero-art"></div>
-      <figcaption class="caption" id="hero-caption"></figcaption>
-    </figure>
-    <div class="hero-copy">
-      <p class="eyebrow">San Marcos, Texas</p>
-      <h1>Susan<br>Tadlock Bond</h1>
-      <p class="roles">Artist &middot; Teacher &middot; Consultant</p>
-      <a class="link" href="gallery.html">View the gallery</a>
+<section class="hero" aria-roledescription="carousel" aria-label="Featured paintings">
+  <div class="slides" id="hero-slides"></div>
+  <div class="hero-shade" aria-hidden="true"></div>
+  <div class="wrap hero-text">
+    <p class="eyebrow">San Marcos, Texas</p>
+    <h1>Susan Tadlock Bond</h1>
+    <p class="roles">Artist &middot; Teacher &middot; Consultant</p>
+    <a class="link" href="gallery.html">View the gallery</a>
+  </div>
+  <div class="wrap hero-bar">
+    <p class="slide-cap" id="hero-caption" aria-live="polite"></p>
+    <div class="slide-ctrl">
+      <div class="dots" id="hero-dots"></div>
+      <button type="button" class="pause" id="hero-pause" aria-label="Pause slideshow">Pause</button>
     </div>
   </div>
 </section>
