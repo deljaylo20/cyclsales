@@ -34,6 +34,7 @@
   </div>
   <div class="wrap hero-bar">
     <p class="slide-cap" id="hero-caption" aria-live="polite"></p>
+    <a class="scroll-cue" href="#intro" aria-label="Scroll to content">&darr;</a>
     <div class="slide-ctrl">
       <div class="dots" id="hero-dots"></div>
       <button type="button" class="pause" id="hero-pause" aria-label="Pause slideshow">Pause</button>
@@ -41,7 +42,15 @@
   </div>
 </section>
 
-<section>
+<section class="intro" id="intro">
+  <div class="wrap">
+    <p class="eyebrow">The artist</p>
+    <!-- DRAFT statement built only from confirmed facts. Swap in Susan's own words when she provides them. -->
+    <p class="reveal" data-reveal>Susan Tadlock Bond is an artist, teacher, and consultant based in San Marcos, Texas. She facilitates International Baccalaureate Visual Arts workshops and serves as a Field Rep. and Outline Reader for the Americas.</p>
+  </div>
+</section>
+
+<section style="padding-top:0">
   <div class="wrap">
     <div class="section-head">
       <div><p class="eyebrow">Selected work</p><h2>From the studio</h2></div>
@@ -54,19 +63,23 @@
 <section style="padding-top:0">
   <div class="wrap statement">
     <div>
-      <p class="eyebrow">About</p>
+      <p class="eyebrow">Roles</p>
       <h2>Making, teaching, and thinking about art.</h2>
     </div>
     <div>
-      <!-- DRAFT bio built only from confirmed facts. Swap in Susan's own artist statement when she provides one. -->
-      <p class="lede">Susan Tadlock Bond is an artist, teacher, and consultant based in San Marcos, Texas.</p>
-      <ul class="roles-list">
+      <ul class="roles-list" style="margin-top:0">
         <li><span>International Baccalaureate Visual Arts</span><span>Workshop Facilitator</span></li>
         <li><span>IB Visual Arts &mdash; The Americas</span><span>Field Rep. &amp; Outline Reader</span></li>
         <li><span>Studio</span><span>San Marcos, TX 78666</span></li>
       </ul>
-      <p style="margin-top:32px"><a class="link" href="contact.html">Commissions &amp; inquiries</a></p>
     </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <p class="eyebrow">Commissions &middot; Workshops &middot; Consulting</p>
+    <a class="cta-line" href="contact.html">Let&rsquo;s make something <span class="nw">together&nbsp;<span class="arr" aria-hidden="true">&nearr;</span></span></a>
   </div>
 </section>
 <section class="newsletter">
@@ -76,12 +89,12 @@
       <h2>New work, shows, and workshops — first.</h2>
     </div>
     <form data-form="newsletter" data-success="You're on the list. Thank you." novalidate>
-      <label class="skip" for="nl-email">Email address</label>
+      <label class="sr-only" for="nl-email">Email address</label>
       <div class="inline-form">
         <input id="nl-email" type="email" name="email" placeholder="Your email address" autocomplete="email" required>
         <button type="submit">Subscribe</button>
       </div>
-      <input type="text" name="website" tabindex="-1" autocomplete="off" class="skip" aria-hidden="true">
+      <input type="text" name="website" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true">
       <p class="fine">An occasional email. Unsubscribe any time. See the <a href="privacy.html">privacy policy</a>.</p>
       <p class="form-status" role="status"></p>
     </form>
@@ -90,7 +103,8 @@
 </main>
 <footer class="site-footer">
   <div class="wrap">
-    <span>&copy; <span id="year">2026</span> Susan Tadlock Bond &middot; San Marcos, Texas</span>
+    <span>&copy; <span id="year">2026</span> Susan Tadlock Bond</span>
+    <span class="clock">San Marcos, TX <time id="local-time"></time></span>
     <nav aria-label="Footer">
       <a href="gallery.html">Gallery</a>
       <a href="contact.html">Contact</a>

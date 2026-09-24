@@ -30,10 +30,12 @@ window.SITE = {
   }
   const detail = (w) => [w.year, w.medium, w.size].filter(Boolean).join(" · ");
 
+  const no = (i) => String(i + 1).padStart(2, "0");
   function tile(w, i, opts) {
+    const right = [w.medium, w.year, w.status].filter(Boolean).join(" · ");
     return `<button class="item" type="button" data-i="${i}" aria-label="View ${esc(w.title)}">
       ${artHTML(w, opts)}
-      <div class="meta"><span class="t">${esc(w.title)}</span><span>${esc(w.status || w.year || "")}</span></div>
+      <div class="meta"><span class="n">${no(i)}</span><span class="t">${esc(w.title)}</span><span class="r">${esc(right)}</span></div>
     </button>`;
   }
 
@@ -56,7 +58,7 @@ window.SITE = {
     if (w.src) stage.innerHTML = `<img src="${esc(w.src)}" alt="${esc(w.title)}">`;
     else stage.innerHTML = `<div class="art" style="aspect-ratio:${w.ratio || 1};height:100%;max-height:100%">${placeholder(w)}</div>`;
     const d = detail(w);
-    cap.innerHTML = `<span class="t">${esc(w.title)}</span>${esc(d)}${d && w.status ? " · " : ""}${esc(w.status || "")}
+    cap.innerHTML = `<span class="n">No. ${no(list[pos])}</span><span class="t">${esc(w.title)}</span>${esc(d)}${d && w.status ? " · " : ""}${esc(w.status || "")}
       <a class="link" href="contact.html?piece=${encodeURIComponent(w.title)}">Inquire</a>`;
     const multi = list.length > 1;
     lb.querySelector(".lb-prev").hidden = lb.querySelector(".lb-next").hidden = !multi;
@@ -190,6 +192,34 @@ window.SITE = {
   if (piece && msg) {
     msg.value = `I'm interested in "${piece}". `;
     if (type) type.value = "Purchasing a piece";
+  }
+
+  // Statement that fills in word by word as it scrolls into view.
+  document.querySelectorAll("[data-reveal]").forEach((el) => {
+    const text = el.textContent.trim(), words = text.split(/\s+/);
+    el.innerHTML = `<span class="sr-only">${esc(text)}</span>` + words.map((w) => `<span class="w" aria-hidden="true">${esc(w)} </span>`).join("");
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { el.classList.add("done"); return; }
+    const spans = [...el.querySelectorAll(".w")];
+    let ticking = false;
+    function update() {
+      ticking = false;
+      const r = el.getBoundingClientRect(), vh = innerHeight;
+      // 0 when the text top is 90% down the screen, fully lit by the time it reaches 40%
+      const p = Math.min(1, Math.max(0, (vh * 0.9 - r.top) / (vh * 0.5)));
+      const lit = Math.round(p * spans.length);
+      spans.forEach((s, k) => s.classList.toggle("on", k < lit));
+    }
+    addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    addEventListener("resize", update);
+    update();
+  });
+
+  // Studio local time in the footer.
+  const clock = document.getElementById("local-time");
+  if (clock) {
+    const fmt = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", hour: "numeric", minute: "2-digit" });
+    const set = () => { const d = new Date(); clock.textContent = fmt.format(d); clock.dateTime = d.toISOString(); };
+    set(); setInterval(set, 30000);
   }
 
   const yr = document.getElementById("year");

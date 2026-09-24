@@ -52,7 +52,7 @@
         </select>
       </div>
       <div class="field"><label for="message">Message</label><textarea id="message" name="message" required></textarea></div>
-      <input type="text" name="website" tabindex="-1" autocomplete="off" class="skip" aria-hidden="true">
+      <input type="text" name="website" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true">
       <label class="check"><input type="checkbox" name="newsletter" value="yes"> Also send me occasional studio notes about new work and workshops. Unsubscribe any time.</label>
       <button class="btn" type="submit">Send message</button>
       <p class="form-status" role="status"></p>
@@ -63,7 +63,8 @@
 </main>
 <footer class="site-footer">
   <div class="wrap">
-    <span>&copy; <span id="year">2026</span> Susan Tadlock Bond &middot; San Marcos, Texas</span>
+    <span>&copy; <span id="year">2026</span> Susan Tadlock Bond</span>
+    <span class="clock">San Marcos, TX <time id="local-time"></time></span>
     <nav aria-label="Footer">
       <a href="gallery.html">Gallery</a>
       <a href="contact.html">Contact</a>
