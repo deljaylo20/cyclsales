@@ -100,7 +100,7 @@ window.SITE = {
   const featured = works.map((w, i) => (w.featured ? i : -1)).filter((i) => i >= 0);
   if (heroEl && featured.length) {
     const i = featured[0], w = works[i];
-    heroEl.innerHTML = artHTML(w, { eager: true });
+    heroEl.innerHTML = artHTML(w, { eager: true, ratio: true });
     heroEl.querySelector(".art").classList.add("hero-art");
     heroEl.querySelector(".art").addEventListener("click", () => open(featured, i));
     const hc = document.getElementById("hero-caption");
@@ -109,7 +109,7 @@ window.SITE = {
   const selEl = document.getElementById("selected");
   if (selEl) {
     const picks = featured.slice(1, 7);
-    selEl.innerHTML = picks.map((i) => tile(works[i], i)).join("");
+    selEl.innerHTML = picks.map((i) => tile(works[i], i, { ratio: true })).join("");
     bind(selEl, picks);
   }
 

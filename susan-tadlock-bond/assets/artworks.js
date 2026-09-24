@@ -10,21 +10,16 @@
     category  used for the Gallery filters (e.g. "Painting", "Drawing", "Mixed Media")
     status    "Available", "Sold", "Private collection", or "" to hide
     ratio     width / height of the image (e.g. 0.8 for portrait 4:5, 1.25 for landscape) — keeps the grid tidy
-    featured  true = shown on the home page. The FIRST featured piece is the big home image; the next 6 fill "Recent pieces".
+    featured  true = shown on the home page. The FIRST featured piece is the large image; the next 6 fill "Recent pieces".
 
-  Everything below is PLACEHOLDER content until Susan's real images and details are added.
+  Titles below come from the file names on Susan's Padlet board. Years come only from signatures visible
+  on the work. Everything else is blank until Susan confirms it.
+  With no image (src: ""), a piece shows a generated color-field placeholder and uses "hue" for its colors.
 */
 window.ARTWORKS = [
-  { src: "", title: "Untitled I",    year: "", medium: "", size: "", category: "Painting",    status: "", ratio: 0.8,  featured: true,  hue: [28, 14, 200] },
-  { src: "", title: "Untitled II",   year: "", medium: "", size: "", category: "Painting",    status: "", ratio: 1.25, featured: true,  hue: [210, 190, 40] },
-  { src: "", title: "Untitled III",  year: "", medium: "", size: "", category: "Mixed Media", status: "", ratio: 1,    featured: true,  hue: [8, 30, 180] },
-  { src: "", title: "Untitled IV",   year: "", medium: "", size: "", category: "Drawing",     status: "", ratio: 0.75, featured: true,  hue: [40, 45, 30] },
-  { src: "", title: "Untitled V",    year: "", medium: "", size: "", category: "Painting",    status: "", ratio: 1.33, featured: true,  hue: [160, 140, 20] },
-  { src: "", title: "Untitled VI",   year: "", medium: "", size: "", category: "Mixed Media", status: "", ratio: 0.8,  featured: true,  hue: [350, 20, 220] },
-  { src: "", title: "Untitled VII",  year: "", medium: "", size: "", category: "Drawing",     status: "", ratio: 1,    featured: true , hue: [30, 30, 30] },
-  { src: "", title: "Untitled VIII", year: "", medium: "", size: "", category: "Painting",    status: "", ratio: 0.7,  featured: false, hue: [200, 25, 45] },
-  { src: "", title: "Untitled IX",   year: "", medium: "", size: "", category: "Mixed Media", status: "", ratio: 1.2,  featured: false, hue: [90, 60, 20] },
-  { src: "", title: "Untitled X",    year: "", medium: "", size: "", category: "Painting",    status: "", ratio: 0.85, featured: false, hue: [15, 355, 45] },
-  { src: "", title: "Untitled XI",   year: "", medium: "", size: "", category: "Drawing",     status: "", ratio: 1.4,  featured: false, hue: [220, 210, 35] },
-  { src: "", title: "Untitled XII",  year: "", medium: "", size: "", category: "Painting",    status: "", ratio: 0.8,  featured: false, hue: [45, 20, 190] }
+  { src: "images/art/santa-barbara.jpg",        title: "Santa Barbara",       year: "",     medium: "", size: "", category: "", status: "", ratio: 0.996, featured: true },
+  { src: "images/art/sea-turtle.jpg",           title: "Turtle",              year: "2020", medium: "", size: "", category: "", status: "", ratio: 1.348, featured: true },
+  { src: "images/art/truck-in-las-cruces.jpg",  title: "Truck in Las Cruces", year: "",     medium: "", size: "", category: "", status: "", ratio: 1.671, featured: true },
+  { src: "images/art/mountain-water.jpg",       title: "Untitled",            year: "2019", medium: "", size: "", category: "", status: "", ratio: 1.508, featured: true },
+  { src: "images/art/fields-and-palms.jpg",     title: "Untitled",            year: "",     medium: "", size: "", category: "", status: "", ratio: 1.447, featured: true }
 ];
