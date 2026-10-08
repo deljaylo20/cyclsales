@@ -1,0 +1,23 @@
+name = "ghl-mention-unread"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+workers_dev = false  # cron only, no public URL
+
+[observability]
+enabled = true  # keeps log lines in the dashboard (Workers → Logs)
+
+[triggers]
+crons = ["* * * * *"]
+
+[vars]
+LOCATION_ID = "36HuyJGqAzjGkAdwB4xL"   # Amz Home Buyers
+WATCH_USER_ID = "O04SuA629fM8CQVYHk9P" # the teammate whose mentions we watch
+DRY_RUN = "false"                      # "true" logs what it would do without writing
+
+[[kv_namespaces]]
+binding = "STATE"
+id = "552d91dd128e48178fa12408f080eaf2"
+
+# Secrets (set with `wrangler secret put`, never commit):
+#   GHL_TOKEN       private integration token for this location (conversations read + write)
+#   MANUAL_RUN_KEY  optional; only used if the worker is given a route
