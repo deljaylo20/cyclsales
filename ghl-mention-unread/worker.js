@@ -3,17 +3,21 @@
 //
 // GHL has no workflow trigger for internal comments, so this polls instead:
 //   1. Search conversations where WATCH_USER_ID is mentioned, newest first.
-//   2. For any with activity since the last run, read recent messages and look
-//      for TYPE_INTERNAL_COMMENT bodies containing <userId>WATCH_USER_ID</userId>.
+//   2. For any with activity in the last 15 minutes, read recent messages and
+//      look for TYPE_INTERNAL_COMMENT bodies containing <userId>WATCH_USER_ID</userId>.
+//      The window overlaps runs on purpose; a KV key per comment ID stops the
+//      same mention acting twice, and a failed comment retries next minute.
 //   3. If the conversation is read (unreadCount 0), set unreadCount to 1.
 //
 // It only ever calls GET search, GET messages, and PUT unreadCount. No tags,
 // contacts, opportunities, or messages are touched.
 
 const API = 'https://services.leadconnectorhq.com';
-const OVERLAP_MS = 2 * 60 * 1000; // re-scan a little behind the watermark
+// KV is only written when a mention is handled, which keeps this inside the
+// Workers free plan (1,000 KV writes/day).
+const LOOKBACK_MS = 15 * 60 * 1000;
 const SEEN_TTL_S = 3 * 24 * 60 * 60; // per-comment dedupe, 3 days
-const SEARCH_LIMIT = 50;
+const SEARCH_LIMIT = 20; // free plan allows 50 subrequests per run
 const MESSAGE_LIMIT = 30;
 
 export default {
@@ -33,12 +37,8 @@ export default {
 
 export async function run(env, now = Date.now()) {
   const log = [];
-  const stored = Number(await env.STATE.get('watermark'));
-  // First run: start from now so we don't back-fill every old mention.
-  const watermark = Number.isFinite(stored) && stored > 0 ? stored : now;
-  const since = watermark - OVERLAP_MS;
+  const since = now - LOOKBACK_MS;
   const marker = `<userId>${env.WATCH_USER_ID}</userId>`;
-  let failed = false;
 
   let conversations;
   try {
@@ -59,7 +59,7 @@ export async function run(env, now = Date.now()) {
 
   const recent = conversations.filter((c) => Number(c.lastMessageDate) >= since);
   if (recent.length === SEARCH_LIMIT) {
-    log.push(`Warning: ${SEARCH_LIMIT} conversations active since last run, some may be missed.`);
+    log.push(`Warning: ${SEARCH_LIMIT} conversations active in the last 15 minutes, some may be missed.`);
   }
 
   for (const convo of recent) {
@@ -77,7 +77,6 @@ export async function run(env, now = Date.now()) {
           (m.body || '').includes(marker),
       );
     } catch (err) {
-      failed = true;
       log.push(`${convo.id}: could not read messages to check for the mention (${err.message}).`);
       continue;
     }
@@ -101,7 +100,6 @@ export async function run(env, now = Date.now()) {
         });
         outcome = 'Conversation marked unread.';
       } catch (err) {
-        failed = true;
         log.push(`${convo.id}: mark unread failed (${err.message}).`);
         continue;
       }
@@ -114,10 +112,6 @@ export async function run(env, now = Date.now()) {
       }
     }
   }
-
-  // Hold the watermark on failure so the next run retries; seen: keys stop
-  // anything that already succeeded from being repeated.
-  if (!failed && env.DRY_RUN !== 'true') await env.STATE.put('watermark', String(now));
 
   if (log.length) console.log(log.join('\n'));
   return log;

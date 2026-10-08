@@ -16,15 +16,21 @@ adds nothing here: the check is an exact string match on
 Every minute (Cloudflare cron):
 
 1. `GET /conversations/search?mentions=<user>` sorted by last message date.
-2. For conversations with activity since the last run, read the last 30
+2. For conversations with activity in the last 15 minutes, read the last 30
    messages and find `TYPE_INTERNAL_COMMENT` messages that contain the mention.
 3. If `unreadCount` is 0 → `PUT /conversations/{id}` with `unreadCount: 1`.
    If it's already unread → log it, no change.
 
-Each comment ID is stored in KV for 3 days so the same mention never re-marks a
-conversation after the teammate reads it. If a call fails, the watermark holds
-and the next run retries. First run starts from "now", so old mentions are not
-back-filled.
+Each handled comment ID is stored in KV for 3 days so the same mention never
+re-marks a conversation after the teammate reads it. A failed call isn't
+stored, so the next run retries it. Only the last 15 minutes are scanned, so old
+mentions are never back-filled.
+
+## Cost
+
+Fits the Cloudflare Workers free plan. A quiet minute is 1 GHL call and no KV
+operations; KV is only written when a mention is handled (free limit is 1,000
+writes/day). 1,440 cron runs/day vs. 100,000 requests/day free.
 
 Log lines (Workers → Logs) use the spec's wording:
 `<conversationId>: Conversation marked unread.` /
@@ -48,6 +54,7 @@ Watch the logs for a few mentions, then set `DRY_RUN = "false"` and redeploy.
 ## Limits
 
 - Up to 1 minute delay after the comment.
+- If the worker is down for more than 15 minutes, mentions in that gap are missed.
 - Editing an existing comment to add a mention isn't caught (no new message).
 - If 30+ messages land in one conversation between runs, an older comment can
   scroll out of the window. Unlikely at one-minute polling.
