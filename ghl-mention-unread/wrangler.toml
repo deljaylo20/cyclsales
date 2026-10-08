@@ -1,0 +1,19 @@
+name = "ghl-mention-unread"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+[triggers]
+crons = ["* * * * *"]
+
+[vars]
+LOCATION_ID = "36HuyJGqAzjGkAdwB4xL"   # Amz Home Buyers
+WATCH_USER_ID = "O04SuA629fM8CQVYHk9P" # the teammate whose mentions we watch
+DRY_RUN = "true"                       # flip to "false" once a live test passes
+
+[[kv_namespaces]]
+binding = "STATE"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+# Secrets (set with `wrangler secret put`, never commit):
+#   GHL_TOKEN       private integration token for this location (conversations read + write)
+#   MANUAL_RUN_KEY  any random string; GET /?key=... runs one pass by hand
