@@ -32,6 +32,14 @@ Fits the Cloudflare Workers free plan. A quiet minute is 1 GHL call and no KV
 operations; KV is only written when a mention is handled (free limit is 1,000
 writes/day). 1,440 cron runs/day vs. 100,000 requests/day free.
 
+Each run stops at 45 calls (GHL + KV), under the free plan's 50 per run. In a
+very busy minute the leftover conversations roll to the next run instead of
+the run failing.
+
+The account is on the Workers Free plan, where going over a limit makes
+requests fail rather than adding charges. Billing only starts if someone
+upgrades the account to Workers Paid ($5/mo minimum).
+
 Log lines (Workers → Logs) use the spec's wording:
 `<conversationId>: Conversation marked unread.` /
 `Conversation was already unread.` / the failure reason.

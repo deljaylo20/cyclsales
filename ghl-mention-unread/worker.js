@@ -17,7 +17,10 @@ const API = 'https://services.leadconnectorhq.com';
 // Workers free plan (1,000 KV writes/day).
 const LOOKBACK_MS = 15 * 60 * 1000;
 const SEEN_TTL_S = 3 * 24 * 60 * 60; // per-comment dedupe, 3 days
-const SEARCH_LIMIT = 20; // free plan allows 50 subrequests per run
+const SEARCH_LIMIT = 20;
+// Free plan hard-fails a run past 50 subrequests (GHL calls + KV ops).
+const SUBREQUEST_BUDGET = 45;
+const CAP_MSG = 'Per-run call cap reached; remaining conversations roll to the next run.';
 const MESSAGE_LIMIT = 30;
 
 export default {
@@ -57,6 +60,9 @@ export async function run(env, now = Date.now()) {
     return log;
   }
 
+  let calls = 1;
+  const room = (n) => calls + n <= SUBREQUEST_BUDGET;
+
   const recent = conversations.filter((c) => Number(c.lastMessageDate) >= since);
   if (recent.length === SEARCH_LIMIT) {
     log.push(`Warning: ${SEARCH_LIMIT} conversations active in the last 15 minutes, some may be missed.`);
@@ -66,8 +72,13 @@ export async function run(env, now = Date.now()) {
     // Only act inside the configured sub-account.
     if (convo.locationId && convo.locationId !== env.LOCATION_ID) continue;
 
+    if (!room(1)) {
+      log.push(CAP_MSG);
+      break;
+    }
     let comments;
     try {
+      calls++;
       const data = await ghl(env, `/conversations/${convo.id}/messages?limit=${MESSAGE_LIMIT}`);
       const messages = data.messages?.messages || data.messages || [];
       comments = messages.filter(
@@ -81,6 +92,12 @@ export async function run(env, now = Date.now()) {
       continue;
     }
 
+    // Reserve for the seen: reads, one PUT, and the seen: writes.
+    if (!room(comments.length * 2 + 1)) {
+      log.push(CAP_MSG);
+      break;
+    }
+    calls += comments.length;
     const fresh = [];
     for (const c of comments) {
       if (!(await env.STATE.get(`seen:${c.id}`))) fresh.push(c);
@@ -94,6 +111,7 @@ export async function run(env, now = Date.now()) {
       outcome = 'Dry run: would mark conversation unread.';
     } else {
       try {
+        calls++;
         await ghl(env, `/conversations/${convo.id}`, {
           method: 'PUT',
           body: JSON.stringify({ unreadCount: 1 }),
@@ -107,6 +125,7 @@ export async function run(env, now = Date.now()) {
 
     log.push(`${convo.id}: ${outcome}`);
     if (env.DRY_RUN !== 'true') {
+      calls += fresh.length;
       for (const c of fresh) {
         await env.STATE.put(`seen:${c.id}`, '1', { expirationTtl: SEEN_TTL_S });
       }
