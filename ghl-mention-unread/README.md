@@ -41,15 +41,18 @@ outbound messages.
 
 ## Deploy
 
+Live on Cloudflare as `ghl-mention-unread` (cron every minute, no public URL).
+The KV namespace and `GHL_TOKEN` secret are already set. To redeploy after a
+code change:
+
 ```sh
 cd ghl-mention-unread
-npx wrangler kv namespace create STATE        # paste the id into wrangler.toml
-npx wrangler secret put GHL_TOKEN
-npx wrangler secret put MANUAL_RUN_KEY
-npx wrangler deploy                           # starts in DRY_RUN
+npx wrangler deploy
 ```
 
-Watch the logs for a few mentions, then set `DRY_RUN = "false"` and redeploy.
+To pause writes without stopping it, set `DRY_RUN = "true"` and redeploy.
+Cron schedules need the account's workers.dev subdomain to exist
+(`cyclsales.workers.dev`), even though this worker doesn't use it.
 
 ## Limits
 
