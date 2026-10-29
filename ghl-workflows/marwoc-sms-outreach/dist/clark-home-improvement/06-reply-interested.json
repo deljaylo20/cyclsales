@@ -1,7 +1,7 @@
 {
-  "_id": "9f8b8f7d-4414-5e37-b8a0-d26c0ab32b75",
+  "_id": "632b4317-b88f-57da-8fe0-af31ec78ee7f",
   "locationId": "REPLACE_LOCATION_ID",
-  "name": "MARWOC | 06 Reply Tagger: Interested",
+  "name": "MARWOC | 06 Reply: Yes / Interested (tag)",
   "status": "draft",
   "version": 1,
   "dataVersion": 1,
@@ -19,26 +19,26 @@
   "eventStartDate": null,
   "window": null,
   "workflowNote": null,
-  "id": "9f8b8f7d-4414-5e37-b8a0-d26c0ab32b75",
+  "id": "632b4317-b88f-57da-8fe0-af31ec78ee7f",
   "workflowData": {
     "templates": [
       {
-        "id": "8507b149-d194-57b8-85aa-221bb636ac54",
+        "id": "ff64dfdf-71ba-5f5a-9e4a-b295a64cef20",
         "order": 0,
-        "name": "From outreach and not suppressed?",
+        "name": "From outreach?",
         "type": "if_else",
         "attributes": {
           "operator": "and",
           "segments": [],
           "if": true,
-          "conditionName": "From outreach and not suppressed?",
+          "conditionName": "From outreach?",
           "branches": [
             {
-              "id": "d679b359-cd19-5b81-af45-77c85d9b7147",
+              "id": "2b95b124-7f7f-577b-a0be-cde2c1d69c87",
               "name": "Yes",
               "segments": [
                 {
-                  "__segmentId": "fdd51a12-275a-5676-b28f-78b1f2494607",
+                  "__segmentId": "b0d7bbd1-27c5-5175-b753-5174743d349e",
                   "operator": "and",
                   "conditions": [
                     {
@@ -47,24 +47,10 @@
                       "conditionOperator": "index-of-true",
                       "conditionValue": [
                         "sms-drip-active",
-                        "sms-drip-complete-no-reply",
                         "sms-replied"
                       ],
                       "__customFieldType__": "standard",
-                      "__conditionId": "3ee4e1d9-b6dd-52b6-9ac7-58a595fcdfa2",
-                      "ifElseNodeId": "",
-                      "isWait": false
-                    },
-                    {
-                      "conditionType": "contact_detail",
-                      "conditionSubType": "tags",
-                      "conditionOperator": "index-of-false",
-                      "conditionValue": [
-                        "dnc-permanent",
-                        "sms-not-interested"
-                      ],
-                      "__customFieldType__": "standard",
-                      "__conditionId": "241684f3-69fb-5dd2-923d-d1815179459a",
+                      "__conditionId": "c08fd061-0bd3-509b-a4f1-d49696d0c8e9",
                       "ifElseNodeId": "",
                       "isWait": false
                     }
@@ -81,14 +67,14 @@
         "cat": "conditions",
         "nodeType": "condition-node",
         "next": [
-          "d679b359-cd19-5b81-af45-77c85d9b7147",
-          "b9a7a771-bd94-54ee-9798-89088988882b"
+          "2b95b124-7f7f-577b-a0be-cde2c1d69c87",
+          "727a465b-528a-5bfc-bf0b-68d76d062266"
         ]
       },
       {
-        "id": "d679b359-cd19-5b81-af45-77c85d9b7147",
-        "parent": "8507b149-d194-57b8-85aa-221bb636ac54",
-        "parentKey": "8507b149-d194-57b8-85aa-221bb636ac54",
+        "id": "2b95b124-7f7f-577b-a0be-cde2c1d69c87",
+        "parent": "ff64dfdf-71ba-5f5a-9e4a-b295a64cef20",
+        "parentKey": "ff64dfdf-71ba-5f5a-9e4a-b295a64cef20",
         "order": 1,
         "name": "Yes",
         "type": "if_else",
@@ -100,19 +86,19 @@
           "branches": []
         },
         "sibling": [
-          "b9a7a771-bd94-54ee-9798-89088988882b"
+          "727a465b-528a-5bfc-bf0b-68d76d062266"
         ],
         "comments": [],
         "nodeType": "branch-yes",
-        "next": "0c7d8a8e-9c4f-5dfd-b274-71342d136af5"
+        "next": "401b846e-9ea6-56ff-b23c-34db82cae125"
       },
       {
-        "id": "0c7d8a8e-9c4f-5dfd-b274-71342d136af5",
+        "id": "401b846e-9ea6-56ff-b23c-34db82cae125",
         "order": 2,
         "name": "Add tag: sms-interested",
         "type": "add_contact_tag",
-        "parent": "d679b359-cd19-5b81-af45-77c85d9b7147",
-        "parentKey": "d679b359-cd19-5b81-af45-77c85d9b7147",
+        "parent": "2b95b124-7f7f-577b-a0be-cde2c1d69c87",
+        "parentKey": "2b95b124-7f7f-577b-a0be-cde2c1d69c87",
         "attributes": {
           "tags": [
             "sms-interested"
@@ -120,9 +106,9 @@
         }
       },
       {
-        "id": "b9a7a771-bd94-54ee-9798-89088988882b",
-        "parent": "8507b149-d194-57b8-85aa-221bb636ac54",
-        "parentKey": "8507b149-d194-57b8-85aa-221bb636ac54",
+        "id": "727a465b-528a-5bfc-bf0b-68d76d062266",
+        "parent": "ff64dfdf-71ba-5f5a-9e4a-b295a64cef20",
+        "parentKey": "ff64dfdf-71ba-5f5a-9e4a-b295a64cef20",
         "order": 1,
         "name": "None",
         "type": "if_else",
@@ -131,7 +117,7 @@
           "else": true
         },
         "sibling": [
-          "d679b359-cd19-5b81-af45-77c85d9b7147"
+          "2b95b124-7f7f-577b-a0be-cde2c1d69c87"
         ],
         "nodeType": "branch-no"
       }
@@ -140,12 +126,12 @@
   "scheduledPauseDates": [],
   "_triggers": [
     {
-      "id": "343901decb0056f5b094",
+      "id": "c10ba6033d305b03835f",
       "deleted": false,
       "active": true,
       "actions": [
         {
-          "workflow_id": "9f8b8f7d-4414-5e37-b8a0-d26c0ab32b75",
+          "workflow_id": "632b4317-b88f-57da-8fe0-af31ec78ee7f",
           "type": "add_to_workflow"
         }
       ],
@@ -166,18 +152,11 @@
             "yep",
             "sure",
             "maybe",
+            "interested",
             "how much",
-            "what would you",
-            "make an offer",
-            "make me an offer",
-            "your offer",
+            "offer",
             "price",
-            "depends",
-            "call me",
-            "possibly",
-            "thinking about it",
-            "open to",
-            "what's your number"
+            "call me"
           ],
           "title": "Contains phrase",
           "type": "string",
@@ -186,7 +165,7 @@
       ],
       "type": "customer_reply",
       "masterType": "highlevel",
-      "workflow_id": "9f8b8f7d-4414-5e37-b8a0-d26c0ab32b75",
+      "workflow_id": "632b4317-b88f-57da-8fe0-af31ec78ee7f",
       "location_id": "REPLACE_LOCATION_ID",
       "name": "Customer Replied",
       "belongs_to": "workflow",

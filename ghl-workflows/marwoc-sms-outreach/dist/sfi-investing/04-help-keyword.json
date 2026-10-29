@@ -28,7 +28,7 @@
         "name": "HELP auto-reply (business identity)",
         "type": "sms",
         "attributes": {
-          "body": "{{custom_values.sms_business_name}}: you're getting texts from {{custom_values.sms_rep_name}} about your property. Questions? Call {{custom_values.sms_business_phone}}. Msg & data rates may apply. Reply STOP to opt out.",
+          "body": "{{custom_values.sms_business_name}}: texts from {{custom_values.sms_rep_name}} about your property. Questions? Call {{custom_values.sms_business_phone}}. Reply STOP to opt out.",
           "attachments": []
         }
       }

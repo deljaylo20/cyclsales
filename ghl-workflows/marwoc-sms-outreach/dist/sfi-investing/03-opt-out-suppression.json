@@ -1,7 +1,7 @@
 {
   "_id": "9ef31fd4-4161-5628-af82-fc67bef68d7f",
   "locationId": "REPLACE_LOCATION_ID",
-  "name": "MARWOC | 03 Opt-Out + Permanent Suppression",
+  "name": "MARWOC | 03 STOP Opt-Out + Permanent Suppression",
   "status": "draft",
   "version": 1,
   "dataVersion": 1,
@@ -64,129 +64,14 @@
       {
         "id": "319ab07c-dfca-532a-96e4-2d9b43133d83",
         "order": 3,
-        "name": "Audit note: opt-out",
-        "type": "add_notes",
-        "parentKey": "49cd643a-71e7-520c-9aad-a4fcdee67ca4",
-        "attributes": {
-          "html": "Opted out by SMS reply: \"{{message.body}}\". DND all channels + dnc-permanent applied by workflow.",
-          "type": "add_notes"
-        },
-        "next": "31908b23-1828-5517-b6a4-16949ec1aa25"
-      },
-      {
-        "id": "31908b23-1828-5517-b6a4-16949ec1aa25",
-        "order": 4,
         "name": "Remove from all other workflows",
         "type": "remove_from_workflow",
-        "parentKey": "319ab07c-dfca-532a-96e4-2d9b43133d83",
+        "parentKey": "49cd643a-71e7-520c-9aad-a4fcdee67ca4",
         "attributes": {
           "type": "remove_from_workflow",
           "allWorkflows": true,
           "includeCurrent": false
-        },
-        "next": "e2328565-7a12-5aa0-8abe-5f0da9e47fb5"
-      },
-      {
-        "id": "e2328565-7a12-5aa0-8abe-5f0da9e47fb5",
-        "order": 5,
-        "name": "Has an outreach opportunity?",
-        "type": "if_else",
-        "parentKey": "31908b23-1828-5517-b6a4-16949ec1aa25",
-        "attributes": {
-          "operator": "and",
-          "segments": [],
-          "if": true,
-          "conditionName": "Has an outreach opportunity?",
-          "branches": [
-            {
-              "id": "886ea385-33a9-5f50-8a39-e80ebb624717",
-              "name": "Yes",
-              "segments": [
-                {
-                  "__segmentId": "b8bca7f2-f5c1-5b6f-ada7-ce3e8dc53dcb",
-                  "operator": "and",
-                  "conditions": [
-                    {
-                      "conditionType": "opportunities",
-                      "conditionSubType": "pipelineId",
-                      "conditionOperator": "==",
-                      "conditionValue": "REPLACE_PIPELINE_ID",
-                      "__customFieldType__": "standard",
-                      "__conditionId": "7c567987-1d44-50db-9d0f-a3669efa19cd",
-                      "ifElseNodeId": "",
-                      "isWait": false
-                    }
-                  ]
-                }
-              ],
-              "operator": "and",
-              "showErrors": false,
-              "branchNameError": "Branch name cannot be empty!"
-            }
-          ],
-          "version": 2
-        },
-        "cat": "conditions",
-        "nodeType": "condition-node",
-        "next": [
-          "886ea385-33a9-5f50-8a39-e80ebb624717",
-          "1a6482ae-b44b-5a8e-89e6-66a8a1b55701"
-        ]
-      },
-      {
-        "id": "886ea385-33a9-5f50-8a39-e80ebb624717",
-        "parent": "e2328565-7a12-5aa0-8abe-5f0da9e47fb5",
-        "parentKey": "e2328565-7a12-5aa0-8abe-5f0da9e47fb5",
-        "order": 6,
-        "name": "Yes",
-        "type": "if_else",
-        "cat": "conditions",
-        "attributes": {
-          "if": false,
-          "conditionName": "Condition",
-          "operator": "and",
-          "branches": []
-        },
-        "sibling": [
-          "1a6482ae-b44b-5a8e-89e6-66a8a1b55701"
-        ],
-        "comments": [],
-        "nodeType": "branch-yes",
-        "next": "bc3388bd-2cfe-5f58-a058-4c899a5a8e71"
-      },
-      {
-        "id": "bc3388bd-2cfe-5f58-a058-4c899a5a8e71",
-        "order": 7,
-        "name": "Move opportunity to Suppressed (lost)",
-        "type": "create_opportunity",
-        "parent": "886ea385-33a9-5f50-8a39-e80ebb624717",
-        "parentKey": "886ea385-33a9-5f50-8a39-e80ebb624717",
-        "attributes": {
-          "fields": [],
-          "type": "create_opportunity",
-          "pipeline_id": "REPLACE_PIPELINE_ID",
-          "pipeline_stage_id": "REPLACE_STAGE_ID_SUPPRESSED",
-          "opportunity_name": "{{contact.first_name}} {{contact.last_name}} - {{contact.address1}}",
-          "opportunity_status": "lost",
-          "opportunity_source": "Seller SMS Outreach",
-          "monetary_value": ""
         }
-      },
-      {
-        "id": "1a6482ae-b44b-5a8e-89e6-66a8a1b55701",
-        "parent": "e2328565-7a12-5aa0-8abe-5f0da9e47fb5",
-        "parentKey": "e2328565-7a12-5aa0-8abe-5f0da9e47fb5",
-        "order": 6,
-        "name": "None",
-        "type": "if_else",
-        "cat": "conditions",
-        "attributes": {
-          "else": true
-        },
-        "sibling": [
-          "886ea385-33a9-5f50-8a39-e80ebb624717"
-        ],
-        "nodeType": "branch-no"
       }
     ]
   },
@@ -216,21 +101,7 @@
           "value": [
             "stop",
             "stopall",
-            "unsubscribe",
-            "remove me",
-            "take me off",
-            "opt out",
-            "optout",
-            "do not text",
-            "don't text",
-            "dont text",
-            "do not contact",
-            "don't contact",
-            "dont contact",
-            "lose my number",
-            "leave me alone",
-            "no more texts",
-            "revoke"
+            "unsubscribe"
           ],
           "title": "Contains phrase",
           "type": "string",

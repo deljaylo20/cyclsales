@@ -27,19 +27,15 @@ TAG = {
     "start": "sms-drip-start",
     "consent": "sms-consent-verified",
     "active": "sms-drip-active",
-    "blocked": "sms-blocked-gate",
-    "complete": "sms-drip-complete-no-reply",
     "replied": "sms-replied",
     "interested": "sms-interested",
-    "review": "sms-reply-needs-review",
     "not_interested": "sms-not-interested",
     "dnc": "dnc-permanent",
 }
-TRACK_TAG = "sms-track-{}"
-IN_OUTREACH = [TAG["active"], TAG["complete"]]
 
-# Workflow-level time window. days: 0 = Sunday ... 6 = Saturday.
-DRIP_WINDOW = {"condition": "when", "start": "10:00", "end": "19:00", "days": [1, 2, 3, 4, 5, 6]}
+# Workflow-level time window (spec Part 2: no sends before 8am / after 9pm local).
+# days: 0 = Sunday ... 6 = Saturday.
+SEND_WINDOW = {"condition": "when", "start": "08:00", "end": "21:00", "days": [0, 1, 2, 3, 4, 5, 6]}
 
 
 # ---------- step definitions (abstract) ----------
@@ -110,21 +106,13 @@ def opportunity(name, pipeline_id, stage_id, status="open"):
         "fields": [], "type": "create_opportunity",
         "pipeline_id": pipeline_id, "pipeline_stage_id": stage_id,
         "opportunity_name": "{{contact.first_name}} {{contact.last_name}} - {{contact.address1}}",
-        "opportunity_status": status, "opportunity_source": "Seller SMS Outreach", "monetary_value": "",
+        "opportunity_status": status, "opportunity_source": "", "monetary_value": "",
     })
 
 
 def notify_sms(body):
     return step("internal_notification", "Text the assigned setter",
                 {"type": "sms", "sms": {"userType": "assign", "body": body, "attachments": []}})
-
-
-def notify_push(title, body):
-    return step("internal_notification", "Push notification to assigned setter", {
-        "type": "notification",
-        "notification": {"type": "send_notification", "redirectPage": "conversation",
-                         "body": body, "title": title, "userType": "assign"},
-    })
 
 
 def task(title, body, due_days):
@@ -194,50 +182,43 @@ def settings(window=None, timezone="account", stop_on_response=False, allow_mult
 
 def wf_drip(a):
     paths = []
-    for t in c.TRACKS:
-        steps = [add_tags(TRACK_TAG.format(t))]
+    for ti, t in enumerate(c.TRACKS):
+        steps = []
         prev_day = 0
-        for i, ((day, label), body) in enumerate(zip(c.TOUCHES, c.MESSAGES[t])):
-            if i:
+        for k, (day, body) in enumerate(zip(c.TOUCH_DAYS, c.track_messages(ti))):
+            if k:
                 steps.append(wait(day - prev_day, "days", f"Wait {day - prev_day} days (to day {day})"))
-            steps.append(sms(f"Touch {i + 1} / Day {day} - {label} ({t})", body))
+            steps.append(sms(f"Touch {k + 1} / Day {day} (Track {t})", body))
             prev_day = day
-        steps += [wait(7, "days", "Wait 7 days for a late reply"),
-                  remove_tags(TAG["active"]), add_tags(TAG["complete"])]
         paths.append((f"Track {t}", 20, steps))
 
     return {
         "key": "01-seller-sms-drip",
-        "name": "MARWOC | 01 Seller SMS Drip (7 wk, 8 touches)",
-        "settings": settings(window=DRIP_WINDOW, timezone="contact", stop_on_response=True, allow_multiple=False),
+        "name": "MARWOC | 01 Seller SMS Drip",
+        "settings": settings(window=SEND_WINDOW, timezone="contact", stop_on_response=True, allow_multiple=False),
         "trigger": tag_trigger(TAG["start"]),
         "steps": [if_else("Gate: consent + not suppressed", [
             ("Clear to send",
-             [has_tags([TAG["consent"]]),
-              lacks_tags([TAG["dnc"], TAG["not_interested"]]),
-              sms_dnd_off()],
+             [has_tags([TAG["consent"]]), lacks_tags([TAG["dnc"], TAG["not_interested"]]), sms_dnd_off()],
              [drip(a["drip_batch_size"], a["drip_interval_minutes"]),
               remove_tags(TAG["start"]),
               add_tags(TAG["active"]),
-              split("Split: 5 voice tracks", paths)]),
-        ], [remove_tags(TAG["start"]), add_tags(TAG["blocked"])])],
+              split("Split: 5 message variations", paths)]),
+        ], [remove_tags(TAG["start"])])],
     }
 
 
 def wf_router(a):
-    def to_setter(stage_id, stage_label, hot):
-        prefix = "HOT - " if hot else ""
+    def to_setter(stage_id, stage_label):
         return [
-            remove_tags(*IN_OUTREACH),
+            remove_tags(TAG["active"]),
             add_tags(TAG["replied"]),
             assign_round_robin(a["setter_user_ids"]),
             opportunity(f"Create/update opportunity: {stage_label}", a["pipeline_id"], stage_id),
-            notify_sms(f"{prefix}SMS reply from {{{{contact.first_name}}}} about {{{{contact.address1}}}}. "
-                       "Open the conversation and reply fast."),
-            notify_push(f"{prefix}Seller replied: {{{{contact.first_name}}}}",
-                        "{{contact.first_name}} replied to the seller SMS about {{contact.address1}}."),
-            task(("Call now: " if hot else "Review reply: ") + "{{contact.first_name}} - {{contact.address1}}",
-                 "Replied to seller SMS outreach. Read the conversation, then call or reply.", 1),
+            task("Seller replied: {{contact.first_name}} - {{contact.address1}}",
+                 "Replied to seller SMS outreach. Read the conversation and follow up.", 1),
+            notify_sms("Seller SMS reply from {{contact.first_name}} about {{contact.address1}}. "
+                       "Check the conversation."),
         ]
 
     return {
@@ -246,17 +227,17 @@ def wf_router(a):
         "settings": settings(),
         "trigger": reply_trigger(),
         "steps": [
-            wait(1, "minutes", "Wait 1 min (let taggers 03/05/06 run first)"),
+            wait(1, "minutes", "Wait 1 min (let 03/05/06 tag the reply first)"),
             if_else("Route the reply", [
-                ("Suppressed (opt-out / not interested)",
-                 [has_tags([TAG["dnc"], TAG["not_interested"]]), has_tags(IN_OUTREACH)],
-                 [remove_tags(*IN_OUTREACH), add_tags(TAG["replied"])]),
-                ("Interested",
-                 [has_tags([TAG["interested"]]), has_tags(IN_OUTREACH)],
-                 to_setter(a["stage_interested_id"], "Replied - Interested", True)),
-                ("Other reply from outreach",
-                 [has_tags(IN_OUTREACH)],
-                 [add_tags(TAG["review"])] + to_setter(a["stage_review_id"], "Replied - Needs Review", False)),
+                ("Stop / not interested",
+                 [has_tags([TAG["dnc"], TAG["not_interested"]]), has_tags([TAG["active"]])],
+                 [remove_tags(TAG["active"]), add_tags(TAG["replied"])]),
+                ("Yes / interested",
+                 [has_tags([TAG["interested"]]), has_tags([TAG["active"]])],
+                 to_setter(a["stage_interested_id"], "Replied - Interested")),
+                ("Any other reply",
+                 [has_tags([TAG["active"]])],
+                 to_setter(a["stage_replied_id"], "Replied")),
             ], []),
         ],
     }
@@ -265,21 +246,14 @@ def wf_router(a):
 def wf_optout(a):
     return {
         "key": "03-opt-out-suppression",
-        "name": "MARWOC | 03 Opt-Out + Permanent Suppression",
+        "name": "MARWOC | 03 STOP Opt-Out + Permanent Suppression",
         "settings": settings(),
         "trigger": reply_trigger(c.OPT_OUT_PHRASES),
         "steps": [
             dnd_all(),
             add_tags(TAG["dnc"]),
             remove_tags(TAG["active"], TAG["start"]),
-            note("Audit note: opt-out",
-                 "Opted out by SMS reply: \"{{message.body}}\". DND all channels + dnc-permanent applied by workflow."),
             remove_from_all_workflows(),
-            if_else("Has an outreach opportunity?", [
-                ("Yes", [in_pipeline(a["pipeline_id"])],
-                 [opportunity("Move opportunity to Suppressed (lost)", a["pipeline_id"],
-                              a["stage_suppressed_id"], status="lost")]),
-            ], []),
         ],
     }
 
@@ -296,29 +270,25 @@ def wf_help(a):
 
 def wf_not_interested(a):
     return {
-        "key": "05-reply-tagger-not-interested",
-        "name": "MARWOC | 05 Reply Tagger: Not Interested / Wrong Number",
+        "key": "05-reply-not-interested",
+        "name": "MARWOC | 05 Reply: Not Interested (suppress)",
         "settings": settings(),
-        "trigger": reply_trigger(c.HARD_NO_PHRASES + c.WRONG_NUMBER_PHRASES),
+        "trigger": reply_trigger(c.NOT_INTERESTED_PHRASES),
         "steps": [if_else("From outreach?", [
-            ("Yes", [has_tags(IN_OUTREACH + [TAG["replied"]])],
-             [add_tags(TAG["not_interested"]),
-              dnd_sms(),
-              note("Note: not interested / wrong number",
-                   "SMS suppressed. Seller replied: \"{{message.body}}\"")]),
+            ("Yes", [has_tags([TAG["active"], TAG["replied"]])],
+             [add_tags(TAG["not_interested"]), dnd_sms()]),
         ], [])],
     }
 
 
 def wf_interested(a):
     return {
-        "key": "06-reply-tagger-interested",
-        "name": "MARWOC | 06 Reply Tagger: Interested",
+        "key": "06-reply-interested",
+        "name": "MARWOC | 06 Reply: Yes / Interested (tag)",
         "settings": settings(),
-        "trigger": reply_trigger(c.POSITIVE_PHRASES),
-        "steps": [if_else("From outreach and not suppressed?", [
-            ("Yes", [has_tags(IN_OUTREACH + [TAG["replied"]]), lacks_tags([TAG["dnc"], TAG["not_interested"]])],
-             [add_tags(TAG["interested"])]),
+        "trigger": reply_trigger(c.INTERESTED_PHRASES),
+        "steps": [if_else("From outreach?", [
+            ("Yes", [has_tags([TAG["active"], TAG["replied"]])], [add_tags(TAG["interested"])]),
         ], [])],
     }
 

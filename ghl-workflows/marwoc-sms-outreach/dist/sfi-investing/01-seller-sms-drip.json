@@ -1,7 +1,7 @@
 {
   "_id": "0c07c05d-3317-5f0b-a47f-a4fd914e8fcc",
   "locationId": "REPLACE_LOCATION_ID",
-  "name": "MARWOC | 01 Seller SMS Drip (7 wk, 8 touches)",
+  "name": "MARWOC | 01 Seller SMS Drip",
   "status": "draft",
   "version": 1,
   "dataVersion": 1,
@@ -19,9 +19,10 @@
   "eventStartDate": null,
   "window": {
     "condition": "when",
-    "start": "10:00",
-    "end": "19:00",
+    "start": "08:00",
+    "end": "21:00",
     "days": [
+      0,
       1,
       2,
       3,
@@ -131,12 +132,12 @@
       {
         "id": "93c5cdce-0867-5ec9-8fef-e148e487c7c9",
         "order": 2,
-        "name": "Throttle: 20 every 30 min",
+        "name": "Throttle: 15 every 30 min",
         "type": "drip",
         "parent": "294faad7-a4b7-5f5b-9a03-7c9c22aee5f8",
         "parentKey": "294faad7-a4b7-5f5b-9a03-7c9c22aee5f8",
         "attributes": {
-          "batchSize": 20,
+          "batchSize": 15,
           "interval": {
             "timeUnit": "minutes",
             "value": 30
@@ -177,7 +178,7 @@
       {
         "id": "ab6fe476-ed68-58ec-8e50-813b98e443c3",
         "order": 5,
-        "name": "Split: 5 voice tracks",
+        "name": "Split: 5 message variations",
         "type": "workflow_split",
         "parent": "294faad7-a4b7-5f5b-9a03-7c9c22aee5f8",
         "parentKey": "17468963-cc9c-5321-9afb-ab5cabb2fdd1",
@@ -288,331 +289,157 @@
       {
         "id": "06e45d06-1db3-5b15-9e9d-57550c1663e6",
         "order": 7,
-        "name": "Add tag: sms-track-A",
-        "type": "add_contact_tag",
+        "name": "Touch 1 / Day 0 (Track A)",
+        "type": "sms",
         "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
         "parentKey": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
         "attributes": {
-          "tags": [
-            "sms-track-A"
-          ]
+          "body": "Hey {{contact.first_name}}, it's {{custom_values.sms_rep_name}} \u2014 real person here, not a call center, I promise. I came across your place on {{contact.address1}} and figured I'd just ask: ever thought about selling it? Totally fine if not. (Reply STOP and I'll leave you be.)",
+          "attachments": []
         },
         "next": "e4024aab-2035-5dcc-a83c-dfcbc35a0c7b"
       },
       {
         "id": "e4024aab-2035-5dcc-a83c-dfcbc35a0c7b",
         "order": 8,
-        "name": "Touch 1 / Day 0 - Opener (A)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 12)",
+        "type": "wait",
         "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
         "parentKey": "06e45d06-1db3-5b15-9e9d-57550c1663e6",
         "attributes": {
-          "body": "Hey {{contact.first_name}}, it's {{custom_values.sms_rep_name}} with {{custom_values.sms_business_name}}. Real person here, not a call center, I promise. I came across your place on {{contact.address1}} and figured I'd just ask, ever thought about selling it? Totally fine if not. Reply STOP and I'll leave you be.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 12)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "b5d2e0bb-e114-542a-9fa2-beefd2165c55"
       },
       {
         "id": "b5d2e0bb-e114-542a-9fa2-beefd2165c55",
         "order": 9,
-        "name": "Wait 3 days (to day 3)",
-        "type": "wait",
+        "name": "Touch 2 / Day 12 (Track A)",
+        "type": "sms",
         "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
         "parentKey": "e4024aab-2035-5dcc-a83c-dfcbc35a0c7b",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 3,
-            "when": "after"
-          },
-          "name": "Wait 3 days (to day 3)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
+          "body": "{{contact.first_name}}, I know you probably get a hundred of these. I'm not here to lowball you or waste your time \u2014 we're a small, veteran-owned outfit that actually buys houses around here. Mind if I ask what your plans are for {{contact.address1}}?",
+          "attachments": []
         },
         "next": "72bbe5db-c9e2-59a2-ac31-c9ebd2282bec"
       },
       {
         "id": "72bbe5db-c9e2-59a2-ac31-c9ebd2282bec",
         "order": 10,
-        "name": "Touch 2 / Day 3 - Bump (A)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 24)",
+        "type": "wait",
         "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
         "parentKey": "b5d2e0bb-e114-542a-9fa2-beefd2165c55",
         "attributes": {
-          "body": "Hey {{contact.first_name}}, {{custom_values.sms_rep_name}} again. Just floating this back up in case it got buried. Any thoughts on {{contact.address1}}? Even a quick 'not now' helps me out.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 24)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "6a676495-65ab-583c-946d-ee70adb8069d"
       },
       {
         "id": "6a676495-65ab-583c-946d-ee70adb8069d",
         "order": 11,
-        "name": "Wait 4 days (to day 7)",
-        "type": "wait",
+        "name": "Touch 3 / Day 24 (Track A)",
+        "type": "sms",
         "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
         "parentKey": "72bbe5db-c9e2-59a2-ac31-c9ebd2282bec",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 4,
-            "when": "after"
-          },
-          "name": "Wait 4 days (to day 7)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
+          "body": "Hey {{contact.first_name}} \u2014 totally cool if this isn't for you, I'd just rather ask than assume. Is the house on {{contact.address1}} something you've thought about selling, or are you planning to hang onto it?",
+          "attachments": []
         },
         "next": "37b3eb51-10a5-5d74-89a9-69ec1c0d21ef"
       },
       {
         "id": "37b3eb51-10a5-5d74-89a9-69ec1c0d21ef",
         "order": 12,
-        "name": "Touch 3 / Day 7 - Plans question (A)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 36)",
+        "type": "wait",
         "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
         "parentKey": "6a676495-65ab-583c-946d-ee70adb8069d",
         "attributes": {
-          "body": "{{contact.first_name}}, quick question if you don't mind. Are you living at {{contact.address1}} right now, renting it out, or is it sitting empty?",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 36)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "723b94ee-5b7f-5f20-b18f-1436985acebd"
       },
       {
         "id": "723b94ee-5b7f-5f20-b18f-1436985acebd",
         "order": 13,
-        "name": "Wait 7 days (to day 14)",
-        "type": "wait",
+        "name": "Touch 4 / Day 36 (Track A)",
+        "type": "sms",
         "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
         "parentKey": "37b3eb51-10a5-5d74-89a9-69ec1c0d21ef",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 7,
-            "when": "after"
-          },
-          "name": "Wait 7 days (to day 14)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
+          "body": "{{contact.first_name}}, real talk \u2014 if the timing's off or you're just not interested, say the word and I'll quit bugging you. But if you've even thought about selling {{contact.address1}}, I'd love to see if we can make it easy on you.",
+          "attachments": []
         },
         "next": "877c53a3-9ebc-59e2-9673-cb7c80cdb340"
       },
       {
         "id": "877c53a3-9ebc-59e2-9673-cb7c80cdb340",
         "order": 14,
-        "name": "Touch 4 / Day 14 - Who we are (A)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 48)",
+        "type": "wait",
         "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
         "parentKey": "723b94ee-5b7f-5f20-b18f-1436985acebd",
         "attributes": {
-          "body": "Hi {{contact.first_name}}, {{custom_values.sms_rep_name}} with {{custom_values.sms_business_name}}. Figured I should say a little more about us. We're a small, veteran-owned team, we're local, and we keep things simple. If {{contact.address1}} is ever on the table, I'm easy to reach right here.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 48)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "60cf3c7d-d2b0-5e71-9aa4-9c9edc9be8f3"
       },
       {
         "id": "60cf3c7d-d2b0-5e71-9aa4-9c9edc9be8f3",
         "order": 15,
-        "name": "Wait 7 days (to day 21)",
-        "type": "wait",
+        "name": "Touch 5 / Day 48 (Track A)",
+        "type": "sms",
         "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
         "parentKey": "877c53a3-9ebc-59e2-9673-cb7c80cdb340",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 7,
-            "when": "after"
-          },
-          "name": "Wait 7 days (to day 21)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "7e51fd75-654f-574b-8fd6-7c4d41fcfc5d"
-      },
-      {
-        "id": "7e51fd75-654f-574b-8fd6-7c4d41fcfc5d",
-        "order": 16,
-        "name": "Touch 5 / Day 21 - Timing (A)",
-        "type": "sms",
-        "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
-        "parentKey": "60cf3c7d-d2b0-5e71-9aa4-9c9edc9be8f3",
-        "attributes": {
-          "body": "Hey {{contact.first_name}}, timing question. If you ever did sell {{contact.address1}}, would it be in the next few months, next year, or no time soon?",
+          "body": "Hi {{contact.first_name}}, it's {{custom_values.sms_rep_name}}. No fancy sales pitch here \u2014 we're local, we're veterans, and we buy a few houses around town. Just wondering if you'd ever want to talk about {{contact.address1}}. If not, no worries at all.",
           "attachments": []
-        },
-        "next": "5640732a-73b9-5256-9fb4-4a081e79ae62"
-      },
-      {
-        "id": "5640732a-73b9-5256-9fb4-4a081e79ae62",
-        "order": 17,
-        "name": "Wait 9 days (to day 30)",
-        "type": "wait",
-        "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
-        "parentKey": "7e51fd75-654f-574b-8fd6-7c4d41fcfc5d",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 9,
-            "when": "after"
-          },
-          "name": "Wait 9 days (to day 30)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "ef705853-be7c-5ea6-8be3-d0d8b809d435"
-      },
-      {
-        "id": "ef705853-be7c-5ea6-8be3-d0d8b809d435",
-        "order": 18,
-        "name": "Touch 6 / Day 30 - Permission check (A)",
-        "type": "sms",
-        "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
-        "parentKey": "5640732a-73b9-5256-9fb4-4a081e79ae62",
-        "attributes": {
-          "body": "{{contact.first_name}}, I don't want to be that guy who won't stop texting. Should I keep you on my list for {{contact.address1}}, or take you off? Either's fine.",
-          "attachments": []
-        },
-        "next": "51905b1c-2677-5623-bb04-7a825e7d77c8"
-      },
-      {
-        "id": "51905b1c-2677-5623-bb04-7a825e7d77c8",
-        "order": 19,
-        "name": "Wait 10 days (to day 40)",
-        "type": "wait",
-        "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
-        "parentKey": "ef705853-be7c-5ea6-8be3-d0d8b809d435",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 10,
-            "when": "after"
-          },
-          "name": "Wait 10 days (to day 40)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "d6ef3b91-7b76-5a83-82ba-eb4b5d059427"
-      },
-      {
-        "id": "d6ef3b91-7b76-5a83-82ba-eb4b5d059427",
-        "order": 20,
-        "name": "Touch 7 / Day 40 - Light check-in (A)",
-        "type": "sms",
-        "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
-        "parentKey": "51905b1c-2677-5623-bb04-7a825e7d77c8",
-        "attributes": {
-          "body": "Hi {{contact.first_name}}, {{custom_values.sms_rep_name}} here. Just thinking about {{contact.address1}} again. If anything's come up with the house, I'm around.",
-          "attachments": []
-        },
-        "next": "565f433e-f962-5716-b130-c60ae9c09c23"
-      },
-      {
-        "id": "565f433e-f962-5716-b130-c60ae9c09c23",
-        "order": 21,
-        "name": "Wait 9 days (to day 49)",
-        "type": "wait",
-        "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
-        "parentKey": "d6ef3b91-7b76-5a83-82ba-eb4b5d059427",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 9,
-            "when": "after"
-          },
-          "name": "Wait 9 days (to day 49)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "fe09feea-333e-553c-a87a-f3598ce9d694"
-      },
-      {
-        "id": "fe09feea-333e-553c-a87a-f3598ce9d694",
-        "order": 22,
-        "name": "Touch 8 / Day 49 - Close the loop (A)",
-        "type": "sms",
-        "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
-        "parentKey": "565f433e-f962-5716-b130-c60ae9c09c23",
-        "attributes": {
-          "body": "{{contact.first_name}}, this is my last text about {{contact.address1}}. If you ever want to talk, just reply here and it comes straight to me. Thanks for putting up with me. - {{custom_values.sms_rep_name}}, {{custom_values.sms_business_name}}. Reply STOP to opt out.",
-          "attachments": []
-        },
-        "next": "e12e6141-b166-579d-9f67-0c17b85db35e"
-      },
-      {
-        "id": "e12e6141-b166-579d-9f67-0c17b85db35e",
-        "order": 23,
-        "name": "Wait 7 days for a late reply",
-        "type": "wait",
-        "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
-        "parentKey": "fe09feea-333e-553c-a87a-f3598ce9d694",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 7,
-            "when": "after"
-          },
-          "name": "Wait 7 days for a late reply",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "e9db5e21-b881-5d9c-8952-b5fd8534a768"
-      },
-      {
-        "id": "e9db5e21-b881-5d9c-8952-b5fd8534a768",
-        "order": 24,
-        "name": "Remove tag: sms-drip-active",
-        "type": "remove_contact_tag",
-        "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
-        "parentKey": "e12e6141-b166-579d-9f67-0c17b85db35e",
-        "attributes": {
-          "tags": [
-            "sms-drip-active"
-          ],
-          "type": "remove_contact_tag"
-        },
-        "next": "cfd73f21-62e4-539b-a109-58459c9a1b54"
-      },
-      {
-        "id": "cfd73f21-62e4-539b-a109-58459c9a1b54",
-        "order": 25,
-        "name": "Add tag: sms-drip-complete-no-reply",
-        "type": "add_contact_tag",
-        "parent": "b870e7a6-89b8-55b4-ba81-2cf3696275d7",
-        "parentKey": "e9db5e21-b881-5d9c-8952-b5fd8534a768",
-        "attributes": {
-          "tags": [
-            "sms-drip-complete-no-reply"
-          ]
         }
       },
       {
@@ -629,331 +456,157 @@
       {
         "id": "ac19162d-8ad6-5428-b99a-9bff3f30a290",
         "order": 7,
-        "name": "Add tag: sms-track-B",
-        "type": "add_contact_tag",
+        "name": "Touch 1 / Day 0 (Track B)",
+        "type": "sms",
         "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
         "parentKey": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
         "attributes": {
-          "tags": [
-            "sms-track-B"
-          ]
+          "body": "{{contact.first_name}}, I know you probably get a hundred of these. I'm not here to lowball you or waste your time \u2014 we're a small, veteran-owned outfit that actually buys houses around here. Mind if I ask what your plans are for {{contact.address1}}?",
+          "attachments": []
         },
         "next": "1bfe76a8-1901-5c70-80da-ff7d7378cbbf"
       },
       {
         "id": "1bfe76a8-1901-5c70-80da-ff7d7378cbbf",
         "order": 8,
-        "name": "Touch 1 / Day 0 - Opener (B)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 12)",
+        "type": "wait",
         "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
         "parentKey": "ac19162d-8ad6-5428-b99a-9bff3f30a290",
         "attributes": {
-          "body": "Hi {{contact.first_name}}, {{custom_values.sms_rep_name}} with {{custom_values.sms_business_name}} here. I know you probably get a hundred of these. I'm not here to lowball you or waste your time, we're a small veteran-owned outfit that buys houses around here. Mind if I ask what your plans are for {{contact.address1}}? Reply STOP to opt out.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 12)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "129cde26-a9a5-51d5-b68e-6a742777454b"
       },
       {
         "id": "129cde26-a9a5-51d5-b68e-6a742777454b",
         "order": 9,
-        "name": "Wait 3 days (to day 3)",
-        "type": "wait",
+        "name": "Touch 2 / Day 12 (Track B)",
+        "type": "sms",
         "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
         "parentKey": "1bfe76a8-1901-5c70-80da-ff7d7378cbbf",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 3,
-            "when": "after"
-          },
-          "name": "Wait 3 days (to day 3)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
+          "body": "Hey {{contact.first_name}} \u2014 totally cool if this isn't for you, I'd just rather ask than assume. Is the house on {{contact.address1}} something you've thought about selling, or are you planning to hang onto it?",
+          "attachments": []
         },
         "next": "c4fe6cd3-a6cf-550d-8ea3-2e791f074218"
       },
       {
         "id": "c4fe6cd3-a6cf-550d-8ea3-2e791f074218",
         "order": 10,
-        "name": "Touch 2 / Day 3 - Bump (B)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 24)",
+        "type": "wait",
         "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
         "parentKey": "129cde26-a9a5-51d5-b68e-6a742777454b",
         "attributes": {
-          "body": "Hi {{contact.first_name}}, following up on my text about {{contact.address1}}. No rush at all, just wanted to make sure it actually reached you.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 24)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "1b00e5e7-3f70-5d55-b014-ea6754d421cc"
       },
       {
         "id": "1b00e5e7-3f70-5d55-b014-ea6754d421cc",
         "order": 11,
-        "name": "Wait 4 days (to day 7)",
-        "type": "wait",
+        "name": "Touch 3 / Day 24 (Track B)",
+        "type": "sms",
         "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
         "parentKey": "c4fe6cd3-a6cf-550d-8ea3-2e791f074218",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 4,
-            "when": "after"
-          },
-          "name": "Wait 4 days (to day 7)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
+          "body": "{{contact.first_name}}, real talk \u2014 if the timing's off or you're just not interested, say the word and I'll quit bugging you. But if you've even thought about selling {{contact.address1}}, I'd love to see if we can make it easy on you.",
+          "attachments": []
         },
         "next": "82c8d90e-8f6e-5d1f-b1a0-bc4e4a98c3d0"
       },
       {
         "id": "82c8d90e-8f6e-5d1f-b1a0-bc4e4a98c3d0",
         "order": 12,
-        "name": "Touch 3 / Day 7 - Plans question (B)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 36)",
+        "type": "wait",
         "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
         "parentKey": "1b00e5e7-3f70-5d55-b014-ea6754d421cc",
         "attributes": {
-          "body": "Hey {{contact.first_name}}, just curious, what's the long-term plan for {{contact.address1}}? Keep it, rent it, sell it someday? No wrong answer.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 36)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "f502a7d3-4ce5-5bba-aa11-c2e5b2860e52"
       },
       {
         "id": "f502a7d3-4ce5-5bba-aa11-c2e5b2860e52",
         "order": 13,
-        "name": "Wait 7 days (to day 14)",
-        "type": "wait",
+        "name": "Touch 4 / Day 36 (Track B)",
+        "type": "sms",
         "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
         "parentKey": "82c8d90e-8f6e-5d1f-b1a0-bc4e4a98c3d0",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 7,
-            "when": "after"
-          },
-          "name": "Wait 7 days (to day 14)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
+          "body": "Hi {{contact.first_name}}, it's {{custom_values.sms_rep_name}}. No fancy sales pitch here \u2014 we're local, we're veterans, and we buy a few houses around town. Just wondering if you'd ever want to talk about {{contact.address1}}. If not, no worries at all.",
+          "attachments": []
         },
         "next": "f23676a0-8458-58d5-9aa6-4e67e88e1996"
       },
       {
         "id": "f23676a0-8458-58d5-9aa6-4e67e88e1996",
         "order": 14,
-        "name": "Touch 4 / Day 14 - Who we are (B)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 48)",
+        "type": "wait",
         "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
         "parentKey": "f502a7d3-4ce5-5bba-aa11-c2e5b2860e52",
         "attributes": {
-          "body": "{{contact.first_name}}, it's {{custom_values.sms_rep_name}} from {{custom_values.sms_business_name}}. We're not a big national outfit, just a few of us who buy houses around here. If you ever want to talk about {{contact.address1}}, text back anytime.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 48)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "6d105356-a957-5b08-b82c-6449d666e945"
       },
       {
         "id": "6d105356-a957-5b08-b82c-6449d666e945",
         "order": 15,
-        "name": "Wait 7 days (to day 21)",
-        "type": "wait",
+        "name": "Touch 5 / Day 48 (Track B)",
+        "type": "sms",
         "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
         "parentKey": "f23676a0-8458-58d5-9aa6-4e67e88e1996",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 7,
-            "when": "after"
-          },
-          "name": "Wait 7 days (to day 21)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "84ce6529-0aae-5a60-955b-1e9952d76b89"
-      },
-      {
-        "id": "84ce6529-0aae-5a60-955b-1e9952d76b89",
-        "order": 16,
-        "name": "Touch 5 / Day 21 - Timing (B)",
-        "type": "sms",
-        "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
-        "parentKey": "6d105356-a957-5b08-b82c-6449d666e945",
-        "attributes": {
-          "body": "Hi {{contact.first_name}}, {{custom_values.sms_rep_name}} here. Is now just a bad time to think about {{contact.address1}}? If so, tell me when would be better and I'll check back then.",
+          "body": "Hey {{contact.first_name}}, it's {{custom_values.sms_rep_name}} \u2014 real person here, not a call center, I promise. I came across your place on {{contact.address1}} and figured I'd just ask: ever thought about selling it? Totally fine if not. (Reply STOP and I'll leave you be.)",
           "attachments": []
-        },
-        "next": "b20ecc99-f9d5-54aa-9085-3529e0ec5bb4"
-      },
-      {
-        "id": "b20ecc99-f9d5-54aa-9085-3529e0ec5bb4",
-        "order": 17,
-        "name": "Wait 9 days (to day 30)",
-        "type": "wait",
-        "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
-        "parentKey": "84ce6529-0aae-5a60-955b-1e9952d76b89",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 9,
-            "when": "after"
-          },
-          "name": "Wait 9 days (to day 30)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "e2cd733f-6b0b-5236-ac4c-7b6cdc639c94"
-      },
-      {
-        "id": "e2cd733f-6b0b-5236-ac4c-7b6cdc639c94",
-        "order": 18,
-        "name": "Touch 6 / Day 30 - Permission check (B)",
-        "type": "sms",
-        "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
-        "parentKey": "b20ecc99-f9d5-54aa-9085-3529e0ec5bb4",
-        "attributes": {
-          "body": "Hey {{contact.first_name}}, {{custom_values.sms_rep_name}} here. Want me to keep checking in about {{contact.address1}} every so often, or would you rather I stop? Either answer is fine.",
-          "attachments": []
-        },
-        "next": "c57f0cd5-ab5f-5b04-a05c-09c2b5bae314"
-      },
-      {
-        "id": "c57f0cd5-ab5f-5b04-a05c-09c2b5bae314",
-        "order": 19,
-        "name": "Wait 10 days (to day 40)",
-        "type": "wait",
-        "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
-        "parentKey": "e2cd733f-6b0b-5236-ac4c-7b6cdc639c94",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 10,
-            "when": "after"
-          },
-          "name": "Wait 10 days (to day 40)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "1be21aea-64db-5f06-b1c4-b2582f62664b"
-      },
-      {
-        "id": "1be21aea-64db-5f06-b1c4-b2582f62664b",
-        "order": 20,
-        "name": "Touch 7 / Day 40 - Light check-in (B)",
-        "type": "sms",
-        "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
-        "parentKey": "c57f0cd5-ab5f-5b04-a05c-09c2b5bae314",
-        "attributes": {
-          "body": "Hey {{contact.first_name}}, no agenda, just checking in. If you ever want to talk about selling {{contact.address1}}, we're still here.",
-          "attachments": []
-        },
-        "next": "325bd4ca-f3d0-5e29-8db5-8daaf8591c43"
-      },
-      {
-        "id": "325bd4ca-f3d0-5e29-8db5-8daaf8591c43",
-        "order": 21,
-        "name": "Wait 9 days (to day 49)",
-        "type": "wait",
-        "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
-        "parentKey": "1be21aea-64db-5f06-b1c4-b2582f62664b",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 9,
-            "when": "after"
-          },
-          "name": "Wait 9 days (to day 49)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "15cb1ba3-5fa6-5515-9da6-cb3f387fc1b4"
-      },
-      {
-        "id": "15cb1ba3-5fa6-5515-9da6-cb3f387fc1b4",
-        "order": 22,
-        "name": "Touch 8 / Day 49 - Close the loop (B)",
-        "type": "sms",
-        "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
-        "parentKey": "325bd4ca-f3d0-5e29-8db5-8daaf8591c43",
-        "attributes": {
-          "body": "Hi {{contact.first_name}}, {{custom_values.sms_rep_name}} with {{custom_values.sms_business_name}}. I'll stop reaching out about {{contact.address1}} after this one. If things change down the road, my door's open. Reply STOP to opt out.",
-          "attachments": []
-        },
-        "next": "b9d5cf9d-cbaa-5c86-a296-7d9b58de1c68"
-      },
-      {
-        "id": "b9d5cf9d-cbaa-5c86-a296-7d9b58de1c68",
-        "order": 23,
-        "name": "Wait 7 days for a late reply",
-        "type": "wait",
-        "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
-        "parentKey": "15cb1ba3-5fa6-5515-9da6-cb3f387fc1b4",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 7,
-            "when": "after"
-          },
-          "name": "Wait 7 days for a late reply",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "c267c56f-8e1a-5410-b222-f8ff1ec6a3ef"
-      },
-      {
-        "id": "c267c56f-8e1a-5410-b222-f8ff1ec6a3ef",
-        "order": 24,
-        "name": "Remove tag: sms-drip-active",
-        "type": "remove_contact_tag",
-        "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
-        "parentKey": "b9d5cf9d-cbaa-5c86-a296-7d9b58de1c68",
-        "attributes": {
-          "tags": [
-            "sms-drip-active"
-          ],
-          "type": "remove_contact_tag"
-        },
-        "next": "3856a353-ba4a-5281-8b59-44504196823d"
-      },
-      {
-        "id": "3856a353-ba4a-5281-8b59-44504196823d",
-        "order": 25,
-        "name": "Add tag: sms-drip-complete-no-reply",
-        "type": "add_contact_tag",
-        "parent": "4b58e3b6-7fcd-5b40-aa3e-bdf6692dae2e",
-        "parentKey": "c267c56f-8e1a-5410-b222-f8ff1ec6a3ef",
-        "attributes": {
-          "tags": [
-            "sms-drip-complete-no-reply"
-          ]
         }
       },
       {
@@ -970,331 +623,157 @@
       {
         "id": "1f07a2dd-1505-5472-953c-0d162d1e42f9",
         "order": 7,
-        "name": "Add tag: sms-track-C",
-        "type": "add_contact_tag",
+        "name": "Touch 1 / Day 0 (Track C)",
+        "type": "sms",
         "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
         "parentKey": "7280b309-8599-5861-83b3-f9920e32ae12",
         "attributes": {
-          "tags": [
-            "sms-track-C"
-          ]
+          "body": "Hey {{contact.first_name}} \u2014 totally cool if this isn't for you, I'd just rather ask than assume. Is the house on {{contact.address1}} something you've thought about selling, or are you planning to hang onto it?",
+          "attachments": []
         },
         "next": "725e9857-f562-545f-a3d4-494e6980a44d"
       },
       {
         "id": "725e9857-f562-545f-a3d4-494e6980a44d",
         "order": 8,
-        "name": "Touch 1 / Day 0 - Opener (C)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 12)",
+        "type": "wait",
         "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
         "parentKey": "1f07a2dd-1505-5472-953c-0d162d1e42f9",
         "attributes": {
-          "body": "Hey {{contact.first_name}}, it's {{custom_values.sms_rep_name}} with {{custom_values.sms_business_name}}. Totally cool if this isn't for you, I'd just rather ask than assume. Is the house on {{contact.address1}} something you've thought about selling, or are you planning to hang onto it? Reply STOP to opt out.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 12)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "5b928f14-acfb-5d77-a817-b7a2f7c760bd"
       },
       {
         "id": "5b928f14-acfb-5d77-a817-b7a2f7c760bd",
         "order": 9,
-        "name": "Wait 3 days (to day 3)",
-        "type": "wait",
+        "name": "Touch 2 / Day 12 (Track C)",
+        "type": "sms",
         "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
         "parentKey": "725e9857-f562-545f-a3d4-494e6980a44d",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 3,
-            "when": "after"
-          },
-          "name": "Wait 3 days (to day 3)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
+          "body": "{{contact.first_name}}, real talk \u2014 if the timing's off or you're just not interested, say the word and I'll quit bugging you. But if you've even thought about selling {{contact.address1}}, I'd love to see if we can make it easy on you.",
+          "attachments": []
         },
         "next": "b38b7414-6bfa-570f-ab86-d17c088625c0"
       },
       {
         "id": "b38b7414-6bfa-570f-ab86-d17c088625c0",
         "order": 10,
-        "name": "Touch 2 / Day 3 - Bump (C)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 24)",
+        "type": "wait",
         "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
         "parentKey": "5b928f14-acfb-5d77-a817-b7a2f7c760bd",
         "attributes": {
-          "body": "{{contact.first_name}}, it's {{custom_values.sms_rep_name}}. I know texts from strangers get ignored, fair enough. If you've got a minute, I'd still like to hear your plans for {{contact.address1}}.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 24)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "598f29ee-c3b1-5eaa-816a-b1697f6596fa"
       },
       {
         "id": "598f29ee-c3b1-5eaa-816a-b1697f6596fa",
         "order": 11,
-        "name": "Wait 4 days (to day 7)",
-        "type": "wait",
+        "name": "Touch 3 / Day 24 (Track C)",
+        "type": "sms",
         "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
         "parentKey": "b38b7414-6bfa-570f-ab86-d17c088625c0",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 4,
-            "when": "after"
-          },
-          "name": "Wait 4 days (to day 7)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
+          "body": "Hi {{contact.first_name}}, it's {{custom_values.sms_rep_name}}. No fancy sales pitch here \u2014 we're local, we're veterans, and we buy a few houses around town. Just wondering if you'd ever want to talk about {{contact.address1}}. If not, no worries at all.",
+          "attachments": []
         },
         "next": "247fa70b-9c7d-558d-be68-0ffa8994a3f2"
       },
       {
         "id": "247fa70b-9c7d-558d-be68-0ffa8994a3f2",
         "order": 12,
-        "name": "Touch 3 / Day 7 - Plans question (C)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 36)",
+        "type": "wait",
         "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
         "parentKey": "598f29ee-c3b1-5eaa-816a-b1697f6596fa",
         "attributes": {
-          "body": "Hi {{contact.first_name}}, if you did sell {{contact.address1}}, would you fix it up first or sell it the way it is? Just trying to understand how you see it.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 36)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "e45c1912-787e-501f-b346-482d9ecd57f2"
       },
       {
         "id": "e45c1912-787e-501f-b346-482d9ecd57f2",
         "order": 13,
-        "name": "Wait 7 days (to day 14)",
-        "type": "wait",
+        "name": "Touch 4 / Day 36 (Track C)",
+        "type": "sms",
         "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
         "parentKey": "247fa70b-9c7d-558d-be68-0ffa8994a3f2",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 7,
-            "when": "after"
-          },
-          "name": "Wait 7 days (to day 14)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
+          "body": "Hey {{contact.first_name}}, it's {{custom_values.sms_rep_name}} \u2014 real person here, not a call center, I promise. I came across your place on {{contact.address1}} and figured I'd just ask: ever thought about selling it? Totally fine if not. (Reply STOP and I'll leave you be.)",
+          "attachments": []
         },
         "next": "8475f19d-bdb9-5b2d-ac0b-907cd5c15446"
       },
       {
         "id": "8475f19d-bdb9-5b2d-ac0b-907cd5c15446",
         "order": 14,
-        "name": "Touch 4 / Day 14 - Who we are (C)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 48)",
+        "type": "wait",
         "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
         "parentKey": "e45c1912-787e-501f-b346-482d9ecd57f2",
         "attributes": {
-          "body": "Hey {{contact.first_name}}, {{custom_values.sms_rep_name}} with {{custom_values.sms_business_name}}. A lot of folks ask who we are before they reply, which makes sense. We're veteran-owned and local, and we only buy a few houses at a time. Happy to answer anything about {{contact.address1}}.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 48)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "35009fb0-a35f-5703-98b6-2b2efa428af2"
       },
       {
         "id": "35009fb0-a35f-5703-98b6-2b2efa428af2",
         "order": 15,
-        "name": "Wait 7 days (to day 21)",
-        "type": "wait",
+        "name": "Touch 5 / Day 48 (Track C)",
+        "type": "sms",
         "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
         "parentKey": "8475f19d-bdb9-5b2d-ac0b-907cd5c15446",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 7,
-            "when": "after"
-          },
-          "name": "Wait 7 days (to day 21)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "51e4b344-bc4e-58d2-b7d6-c82b7f1d1c4e"
-      },
-      {
-        "id": "51e4b344-bc4e-58d2-b7d6-c82b7f1d1c4e",
-        "order": 16,
-        "name": "Touch 5 / Day 21 - Timing (C)",
-        "type": "sms",
-        "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
-        "parentKey": "35009fb0-a35f-5703-98b6-2b2efa428af2",
-        "attributes": {
-          "body": "{{contact.first_name}}, sometimes the answer is 'not yet' and that's fine. Want me to circle back on {{contact.address1}} in a few months instead?",
+          "body": "{{contact.first_name}}, I know you probably get a hundred of these. I'm not here to lowball you or waste your time \u2014 we're a small, veteran-owned outfit that actually buys houses around here. Mind if I ask what your plans are for {{contact.address1}}?",
           "attachments": []
-        },
-        "next": "fcdeb373-be7f-53af-b4c6-9f6d029b0c3c"
-      },
-      {
-        "id": "fcdeb373-be7f-53af-b4c6-9f6d029b0c3c",
-        "order": 17,
-        "name": "Wait 9 days (to day 30)",
-        "type": "wait",
-        "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
-        "parentKey": "51e4b344-bc4e-58d2-b7d6-c82b7f1d1c4e",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 9,
-            "when": "after"
-          },
-          "name": "Wait 9 days (to day 30)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "fb327748-d68c-5f31-a37a-6eab67ed9857"
-      },
-      {
-        "id": "fb327748-d68c-5f31-a37a-6eab67ed9857",
-        "order": 18,
-        "name": "Touch 6 / Day 30 - Permission check (C)",
-        "type": "sms",
-        "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
-        "parentKey": "fcdeb373-be7f-53af-b4c6-9f6d029b0c3c",
-        "attributes": {
-          "body": "Hi {{contact.first_name}}, quick check. Is it okay if I keep reaching out about {{contact.address1}}, or should I leave you be? No hard feelings either way.",
-          "attachments": []
-        },
-        "next": "34b3eae2-162b-5a69-b065-006d2001b21b"
-      },
-      {
-        "id": "34b3eae2-162b-5a69-b065-006d2001b21b",
-        "order": 19,
-        "name": "Wait 10 days (to day 40)",
-        "type": "wait",
-        "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
-        "parentKey": "fb327748-d68c-5f31-a37a-6eab67ed9857",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 10,
-            "when": "after"
-          },
-          "name": "Wait 10 days (to day 40)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "2bab725f-d265-52e7-b313-36f7ed916d69"
-      },
-      {
-        "id": "2bab725f-d265-52e7-b313-36f7ed916d69",
-        "order": 20,
-        "name": "Touch 7 / Day 40 - Light check-in (C)",
-        "type": "sms",
-        "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
-        "parentKey": "34b3eae2-162b-5a69-b065-006d2001b21b",
-        "attributes": {
-          "body": "{{contact.first_name}}, it's been a few weeks. Anything new with {{contact.address1}}? Even if the answer's no, I appreciate you reading these.",
-          "attachments": []
-        },
-        "next": "4cc06ffa-6001-5140-a93c-74bba0e55f47"
-      },
-      {
-        "id": "4cc06ffa-6001-5140-a93c-74bba0e55f47",
-        "order": 21,
-        "name": "Wait 9 days (to day 49)",
-        "type": "wait",
-        "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
-        "parentKey": "2bab725f-d265-52e7-b313-36f7ed916d69",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 9,
-            "when": "after"
-          },
-          "name": "Wait 9 days (to day 49)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "3f6bec93-b867-5232-ad9b-203a12ef5aca"
-      },
-      {
-        "id": "3f6bec93-b867-5232-ad9b-203a12ef5aca",
-        "order": 22,
-        "name": "Touch 8 / Day 49 - Close the loop (C)",
-        "type": "sms",
-        "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
-        "parentKey": "4cc06ffa-6001-5140-a93c-74bba0e55f47",
-        "attributes": {
-          "body": "Hey {{contact.first_name}}, closing the loop on {{contact.address1}} so I'm not cluttering your phone. If selling ever makes sense, text this number anytime. - {{custom_values.sms_rep_name}} with {{custom_values.sms_business_name}}. Reply STOP to opt out.",
-          "attachments": []
-        },
-        "next": "23dff51f-dafb-52af-9ba7-1610e83bf879"
-      },
-      {
-        "id": "23dff51f-dafb-52af-9ba7-1610e83bf879",
-        "order": 23,
-        "name": "Wait 7 days for a late reply",
-        "type": "wait",
-        "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
-        "parentKey": "3f6bec93-b867-5232-ad9b-203a12ef5aca",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 7,
-            "when": "after"
-          },
-          "name": "Wait 7 days for a late reply",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "473210e6-75aa-519e-a0af-6b39884550d5"
-      },
-      {
-        "id": "473210e6-75aa-519e-a0af-6b39884550d5",
-        "order": 24,
-        "name": "Remove tag: sms-drip-active",
-        "type": "remove_contact_tag",
-        "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
-        "parentKey": "23dff51f-dafb-52af-9ba7-1610e83bf879",
-        "attributes": {
-          "tags": [
-            "sms-drip-active"
-          ],
-          "type": "remove_contact_tag"
-        },
-        "next": "13ac335b-af63-5b41-ac4d-0481144c2ba3"
-      },
-      {
-        "id": "13ac335b-af63-5b41-ac4d-0481144c2ba3",
-        "order": 25,
-        "name": "Add tag: sms-drip-complete-no-reply",
-        "type": "add_contact_tag",
-        "parent": "7280b309-8599-5861-83b3-f9920e32ae12",
-        "parentKey": "473210e6-75aa-519e-a0af-6b39884550d5",
-        "attributes": {
-          "tags": [
-            "sms-drip-complete-no-reply"
-          ]
         }
       },
       {
@@ -1311,331 +790,157 @@
       {
         "id": "40121f11-a698-5592-84ae-e9ca2cd5b582",
         "order": 7,
-        "name": "Add tag: sms-track-D",
-        "type": "add_contact_tag",
+        "name": "Touch 1 / Day 0 (Track D)",
+        "type": "sms",
         "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
         "parentKey": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
         "attributes": {
-          "tags": [
-            "sms-track-D"
-          ]
+          "body": "{{contact.first_name}}, real talk \u2014 if the timing's off or you're just not interested, say the word and I'll quit bugging you. But if you've even thought about selling {{contact.address1}}, I'd love to see if we can make it easy on you.",
+          "attachments": []
         },
         "next": "aa4535bd-2270-5a2d-91e7-c02bc961d651"
       },
       {
         "id": "aa4535bd-2270-5a2d-91e7-c02bc961d651",
         "order": 8,
-        "name": "Touch 1 / Day 0 - Opener (D)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 12)",
+        "type": "wait",
         "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
         "parentKey": "40121f11-a698-5592-84ae-e9ca2cd5b582",
         "attributes": {
-          "body": "{{contact.first_name}}, it's {{custom_values.sms_rep_name}} with {{custom_values.sms_business_name}}. Real talk, if the timing's off or you're just not interested, reply STOP and I'll quit bugging you. But if you've even thought about selling {{contact.address1}}, I'd love to see if we can make it easy on you.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 12)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "1f5f0886-2f7c-58f4-897b-16c753a27dda"
       },
       {
         "id": "1f5f0886-2f7c-58f4-897b-16c753a27dda",
         "order": 9,
-        "name": "Wait 3 days (to day 3)",
-        "type": "wait",
+        "name": "Touch 2 / Day 12 (Track D)",
+        "type": "sms",
         "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
         "parentKey": "aa4535bd-2270-5a2d-91e7-c02bc961d651",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 3,
-            "when": "after"
-          },
-          "name": "Wait 3 days (to day 3)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
+          "body": "Hi {{contact.first_name}}, it's {{custom_values.sms_rep_name}}. No fancy sales pitch here \u2014 we're local, we're veterans, and we buy a few houses around town. Just wondering if you'd ever want to talk about {{contact.address1}}. If not, no worries at all.",
+          "attachments": []
         },
         "next": "ec9f3444-62f1-5e7e-9f16-8b39d788f9f1"
       },
       {
         "id": "ec9f3444-62f1-5e7e-9f16-8b39d788f9f1",
         "order": 10,
-        "name": "Touch 2 / Day 3 - Bump (D)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 24)",
+        "type": "wait",
         "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
         "parentKey": "1f5f0886-2f7c-58f4-897b-16c753a27dda",
         "attributes": {
-          "body": "Hey {{contact.first_name}}, circling back on {{contact.address1}}. If selling's not on your mind, totally fine, just tell me and I'll stop.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 24)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "48c5fcca-f190-5b32-bc83-d159b4e32f27"
       },
       {
         "id": "48c5fcca-f190-5b32-bc83-d159b4e32f27",
         "order": 11,
-        "name": "Wait 4 days (to day 7)",
-        "type": "wait",
+        "name": "Touch 3 / Day 24 (Track D)",
+        "type": "sms",
         "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
         "parentKey": "ec9f3444-62f1-5e7e-9f16-8b39d788f9f1",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 4,
-            "when": "after"
-          },
-          "name": "Wait 4 days (to day 7)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
+          "body": "Hey {{contact.first_name}}, it's {{custom_values.sms_rep_name}} \u2014 real person here, not a call center, I promise. I came across your place on {{contact.address1}} and figured I'd just ask: ever thought about selling it? Totally fine if not. (Reply STOP and I'll leave you be.)",
+          "attachments": []
         },
         "next": "d6d376fe-f911-500a-91a9-eee0fbde39d8"
       },
       {
         "id": "d6d376fe-f911-500a-91a9-eee0fbde39d8",
         "order": 12,
-        "name": "Touch 3 / Day 7 - Plans question (D)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 36)",
+        "type": "wait",
         "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
         "parentKey": "48c5fcca-f190-5b32-bc83-d159b4e32f27",
         "attributes": {
-          "body": "{{contact.first_name}}, not trying to push here. If {{contact.address1}} ever turned into more hassle than it's worth, would you want someone local to talk to about it?",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 36)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "1707d7df-7055-507e-89f7-74ca337cc8dc"
       },
       {
         "id": "1707d7df-7055-507e-89f7-74ca337cc8dc",
         "order": 13,
-        "name": "Wait 7 days (to day 14)",
-        "type": "wait",
+        "name": "Touch 4 / Day 36 (Track D)",
+        "type": "sms",
         "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
         "parentKey": "d6d376fe-f911-500a-91a9-eee0fbde39d8",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 7,
-            "when": "after"
-          },
-          "name": "Wait 7 days (to day 14)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
+          "body": "{{contact.first_name}}, I know you probably get a hundred of these. I'm not here to lowball you or waste your time \u2014 we're a small, veteran-owned outfit that actually buys houses around here. Mind if I ask what your plans are for {{contact.address1}}?",
+          "attachments": []
         },
         "next": "75517d8e-1578-551b-bbcd-49dfc11c8884"
       },
       {
         "id": "75517d8e-1578-551b-bbcd-49dfc11c8884",
         "order": 14,
-        "name": "Touch 4 / Day 14 - Who we are (D)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 48)",
+        "type": "wait",
         "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
         "parentKey": "1707d7df-7055-507e-89f7-74ca337cc8dc",
         "attributes": {
-          "body": "Hi {{contact.first_name}}, {{custom_values.sms_rep_name}} here with {{custom_values.sms_business_name}}. We're veterans and we're local. No pressure on {{contact.address1}}, just want you to know there's a real person on this end.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 48)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "7eb1eb5f-ffec-5494-844f-8eb1dd1f9d75"
       },
       {
         "id": "7eb1eb5f-ffec-5494-844f-8eb1dd1f9d75",
         "order": 15,
-        "name": "Wait 7 days (to day 21)",
-        "type": "wait",
+        "name": "Touch 5 / Day 48 (Track D)",
+        "type": "sms",
         "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
         "parentKey": "75517d8e-1578-551b-bbcd-49dfc11c8884",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 7,
-            "when": "after"
-          },
-          "name": "Wait 7 days (to day 21)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "1f7718a8-18d3-5846-ba9d-112744fda12c"
-      },
-      {
-        "id": "1f7718a8-18d3-5846-ba9d-112744fda12c",
-        "order": 16,
-        "name": "Touch 5 / Day 21 - Timing (D)",
-        "type": "sms",
-        "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
-        "parentKey": "7eb1eb5f-ffec-5494-844f-8eb1dd1f9d75",
-        "attributes": {
-          "body": "Hey {{contact.first_name}}, quick one. Has anything changed with {{contact.address1}} since I first reached out, or is it pretty much the same?",
+          "body": "Hey {{contact.first_name}} \u2014 totally cool if this isn't for you, I'd just rather ask than assume. Is the house on {{contact.address1}} something you've thought about selling, or are you planning to hang onto it?",
           "attachments": []
-        },
-        "next": "abb62e2d-9f68-5bc2-b2c0-1bd8865826b7"
-      },
-      {
-        "id": "abb62e2d-9f68-5bc2-b2c0-1bd8865826b7",
-        "order": 17,
-        "name": "Wait 9 days (to day 30)",
-        "type": "wait",
-        "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
-        "parentKey": "1f7718a8-18d3-5846-ba9d-112744fda12c",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 9,
-            "when": "after"
-          },
-          "name": "Wait 9 days (to day 30)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "976c1ac1-0fc3-530a-9413-f0463da98ba9"
-      },
-      {
-        "id": "976c1ac1-0fc3-530a-9413-f0463da98ba9",
-        "order": 18,
-        "name": "Touch 6 / Day 30 - Permission check (D)",
-        "type": "sms",
-        "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
-        "parentKey": "abb62e2d-9f68-5bc2-b2c0-1bd8865826b7",
-        "attributes": {
-          "body": "{{contact.first_name}}, I've reached out a few times about {{contact.address1}} and I don't want to overdo it. Still worth staying in touch, or should I back off?",
-          "attachments": []
-        },
-        "next": "4868ad38-bcea-54e3-b172-b9cb997b505d"
-      },
-      {
-        "id": "4868ad38-bcea-54e3-b172-b9cb997b505d",
-        "order": 19,
-        "name": "Wait 10 days (to day 40)",
-        "type": "wait",
-        "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
-        "parentKey": "976c1ac1-0fc3-530a-9413-f0463da98ba9",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 10,
-            "when": "after"
-          },
-          "name": "Wait 10 days (to day 40)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "d95ad210-fb3b-5e48-87bc-7b253f1ad08d"
-      },
-      {
-        "id": "d95ad210-fb3b-5e48-87bc-7b253f1ad08d",
-        "order": 20,
-        "name": "Touch 7 / Day 40 - Light check-in (D)",
-        "type": "sms",
-        "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
-        "parentKey": "4868ad38-bcea-54e3-b172-b9cb997b505d",
-        "attributes": {
-          "body": "Hi {{contact.first_name}}, {{custom_values.sms_rep_name}} with {{custom_values.sms_business_name}} checking in. Still happy to talk about {{contact.address1}} whenever it suits you.",
-          "attachments": []
-        },
-        "next": "04a3d49e-3d56-551d-8698-0ab83532890e"
-      },
-      {
-        "id": "04a3d49e-3d56-551d-8698-0ab83532890e",
-        "order": 21,
-        "name": "Wait 9 days (to day 49)",
-        "type": "wait",
-        "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
-        "parentKey": "d95ad210-fb3b-5e48-87bc-7b253f1ad08d",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 9,
-            "when": "after"
-          },
-          "name": "Wait 9 days (to day 49)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "29bb962d-afcb-5c5d-bd09-cefacb48471f"
-      },
-      {
-        "id": "29bb962d-afcb-5c5d-bd09-cefacb48471f",
-        "order": 22,
-        "name": "Touch 8 / Day 49 - Close the loop (D)",
-        "type": "sms",
-        "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
-        "parentKey": "04a3d49e-3d56-551d-8698-0ab83532890e",
-        "attributes": {
-          "body": "{{contact.first_name}}, last one from me, I promise. If {{contact.address1}} is ever something you want to talk about, I'm a text away. Take care. - {{custom_values.sms_rep_name}}, {{custom_values.sms_business_name}}. Reply STOP to opt out.",
-          "attachments": []
-        },
-        "next": "2460fa13-8aeb-54c8-ae2e-42348d161ae7"
-      },
-      {
-        "id": "2460fa13-8aeb-54c8-ae2e-42348d161ae7",
-        "order": 23,
-        "name": "Wait 7 days for a late reply",
-        "type": "wait",
-        "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
-        "parentKey": "29bb962d-afcb-5c5d-bd09-cefacb48471f",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 7,
-            "when": "after"
-          },
-          "name": "Wait 7 days for a late reply",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "3095d1c8-100f-501d-b148-91d493f3489e"
-      },
-      {
-        "id": "3095d1c8-100f-501d-b148-91d493f3489e",
-        "order": 24,
-        "name": "Remove tag: sms-drip-active",
-        "type": "remove_contact_tag",
-        "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
-        "parentKey": "2460fa13-8aeb-54c8-ae2e-42348d161ae7",
-        "attributes": {
-          "tags": [
-            "sms-drip-active"
-          ],
-          "type": "remove_contact_tag"
-        },
-        "next": "d279b28d-8084-5053-a246-440f0c83739c"
-      },
-      {
-        "id": "d279b28d-8084-5053-a246-440f0c83739c",
-        "order": 25,
-        "name": "Add tag: sms-drip-complete-no-reply",
-        "type": "add_contact_tag",
-        "parent": "71d993e8-7521-57fc-b963-f5a50f63f4bb",
-        "parentKey": "3095d1c8-100f-501d-b148-91d493f3489e",
-        "attributes": {
-          "tags": [
-            "sms-drip-complete-no-reply"
-          ]
         }
       },
       {
@@ -1652,331 +957,157 @@
       {
         "id": "ccc6ea9d-1043-5b4f-a8c3-657d8c2a1497",
         "order": 7,
-        "name": "Add tag: sms-track-E",
-        "type": "add_contact_tag",
+        "name": "Touch 1 / Day 0 (Track E)",
+        "type": "sms",
         "parent": "65d2e550-3f36-598a-a12e-100b28079087",
         "parentKey": "65d2e550-3f36-598a-a12e-100b28079087",
         "attributes": {
-          "tags": [
-            "sms-track-E"
-          ]
+          "body": "Hi {{contact.first_name}}, it's {{custom_values.sms_rep_name}}. No fancy sales pitch here \u2014 we're local, we're veterans, and we buy a few houses around town. Just wondering if you'd ever want to talk about {{contact.address1}}. If not, no worries at all.",
+          "attachments": []
         },
         "next": "8370dde1-2f95-5425-a54d-9d4f646c87ad"
       },
       {
         "id": "8370dde1-2f95-5425-a54d-9d4f646c87ad",
         "order": 8,
-        "name": "Touch 1 / Day 0 - Opener (E)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 12)",
+        "type": "wait",
         "parent": "65d2e550-3f36-598a-a12e-100b28079087",
         "parentKey": "ccc6ea9d-1043-5b4f-a8c3-657d8c2a1497",
         "attributes": {
-          "body": "Hi {{contact.first_name}}, it's {{custom_values.sms_rep_name}} with {{custom_values.sms_business_name}}. No fancy sales pitch here, we're local, we're veterans, and we buy a few houses around town. Just wondering if you'd ever want to talk about {{contact.address1}}. If not, no worries at all. Reply STOP to opt out.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 12)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "15e12327-88ed-541b-a2fe-07c3327c60ac"
       },
       {
         "id": "15e12327-88ed-541b-a2fe-07c3327c60ac",
         "order": 9,
-        "name": "Wait 3 days (to day 3)",
-        "type": "wait",
+        "name": "Touch 2 / Day 12 (Track E)",
+        "type": "sms",
         "parent": "65d2e550-3f36-598a-a12e-100b28079087",
         "parentKey": "8370dde1-2f95-5425-a54d-9d4f646c87ad",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 3,
-            "when": "after"
-          },
-          "name": "Wait 3 days (to day 3)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
+          "body": "Hey {{contact.first_name}}, it's {{custom_values.sms_rep_name}} \u2014 real person here, not a call center, I promise. I came across your place on {{contact.address1}} and figured I'd just ask: ever thought about selling it? Totally fine if not. (Reply STOP and I'll leave you be.)",
+          "attachments": []
         },
         "next": "71fd613e-1a52-5df3-87d6-5e7e9fa5f80d"
       },
       {
         "id": "71fd613e-1a52-5df3-87d6-5e7e9fa5f80d",
         "order": 10,
-        "name": "Touch 2 / Day 3 - Bump (E)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 24)",
+        "type": "wait",
         "parent": "65d2e550-3f36-598a-a12e-100b28079087",
         "parentKey": "15e12327-88ed-541b-a2fe-07c3327c60ac",
         "attributes": {
-          "body": "Hi {{contact.first_name}}, {{custom_values.sms_rep_name}} here again. Didn't want my last text to just sit there. Any interest in talking about {{contact.address1}}, now or down the road?",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 24)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "0fd64645-f4e3-56fb-accb-133103e3109e"
       },
       {
         "id": "0fd64645-f4e3-56fb-accb-133103e3109e",
         "order": 11,
-        "name": "Wait 4 days (to day 7)",
-        "type": "wait",
+        "name": "Touch 3 / Day 24 (Track E)",
+        "type": "sms",
         "parent": "65d2e550-3f36-598a-a12e-100b28079087",
         "parentKey": "71fd613e-1a52-5df3-87d6-5e7e9fa5f80d",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 4,
-            "when": "after"
-          },
-          "name": "Wait 4 days (to day 7)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
+          "body": "{{contact.first_name}}, I know you probably get a hundred of these. I'm not here to lowball you or waste your time \u2014 we're a small, veteran-owned outfit that actually buys houses around here. Mind if I ask what your plans are for {{contact.address1}}?",
+          "attachments": []
         },
         "next": "c9e781b8-3ffc-5e8c-92d2-3247632de567"
       },
       {
         "id": "c9e781b8-3ffc-5e8c-92d2-3247632de567",
         "order": 12,
-        "name": "Touch 3 / Day 7 - Plans question (E)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 36)",
+        "type": "wait",
         "parent": "65d2e550-3f36-598a-a12e-100b28079087",
         "parentKey": "0fd64645-f4e3-56fb-accb-133103e3109e",
         "attributes": {
-          "body": "Hey {{contact.first_name}}, honest question. Is {{contact.address1}} a someday-maybe thing for you, or a definitely-keeping-it thing? Either answer helps me.",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 36)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "2d6db6f2-7732-5c71-9021-c2940076c125"
       },
       {
         "id": "2d6db6f2-7732-5c71-9021-c2940076c125",
         "order": 13,
-        "name": "Wait 7 days (to day 14)",
-        "type": "wait",
+        "name": "Touch 4 / Day 36 (Track E)",
+        "type": "sms",
         "parent": "65d2e550-3f36-598a-a12e-100b28079087",
         "parentKey": "c9e781b8-3ffc-5e8c-92d2-3247632de567",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 7,
-            "when": "after"
-          },
-          "name": "Wait 7 days (to day 14)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
+          "body": "Hey {{contact.first_name}} \u2014 totally cool if this isn't for you, I'd just rather ask than assume. Is the house on {{contact.address1}} something you've thought about selling, or are you planning to hang onto it?",
+          "attachments": []
         },
         "next": "724b9a46-c70c-578b-9566-00e39e330035"
       },
       {
         "id": "724b9a46-c70c-578b-9566-00e39e330035",
         "order": 14,
-        "name": "Touch 4 / Day 14 - Who we are (E)",
-        "type": "sms",
+        "name": "Wait 12 days (to day 48)",
+        "type": "wait",
         "parent": "65d2e550-3f36-598a-a12e-100b28079087",
         "parentKey": "2d6db6f2-7732-5c71-9021-c2940076c125",
         "attributes": {
-          "body": "{{contact.first_name}}, it's {{custom_values.sms_rep_name}} from {{custom_values.sms_business_name}}. In case it helps, we're a small local team, veteran-owned, and we'd rather have one honest conversation than send you twenty texts. Any interest on {{contact.address1}}?",
-          "attachments": []
+          "type": "time",
+          "startAfter": {
+            "type": "days",
+            "value": 12,
+            "when": "after"
+          },
+          "name": "Wait 12 days (to day 48)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
         },
         "next": "cc230c77-7f94-54d2-aa3b-580edc6071a2"
       },
       {
         "id": "cc230c77-7f94-54d2-aa3b-580edc6071a2",
         "order": 15,
-        "name": "Wait 7 days (to day 21)",
-        "type": "wait",
+        "name": "Touch 5 / Day 48 (Track E)",
+        "type": "sms",
         "parent": "65d2e550-3f36-598a-a12e-100b28079087",
         "parentKey": "724b9a46-c70c-578b-9566-00e39e330035",
         "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 7,
-            "when": "after"
-          },
-          "name": "Wait 7 days (to day 21)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "8d6cc74e-2a8d-5218-a33f-e78361f548eb"
-      },
-      {
-        "id": "8d6cc74e-2a8d-5218-a33f-e78361f548eb",
-        "order": 16,
-        "name": "Touch 5 / Day 21 - Timing (E)",
-        "type": "sms",
-        "parent": "65d2e550-3f36-598a-a12e-100b28079087",
-        "parentKey": "cc230c77-7f94-54d2-aa3b-580edc6071a2",
-        "attributes": {
-          "body": "Hi {{contact.first_name}}, I'll keep it short. If selling {{contact.address1}} ever makes sense for you, what would the timing look like?",
+          "body": "{{contact.first_name}}, real talk \u2014 if the timing's off or you're just not interested, say the word and I'll quit bugging you. But if you've even thought about selling {{contact.address1}}, I'd love to see if we can make it easy on you.",
           "attachments": []
-        },
-        "next": "b2eb2f95-0665-5f81-ae3e-ba0425a4220e"
-      },
-      {
-        "id": "b2eb2f95-0665-5f81-ae3e-ba0425a4220e",
-        "order": 17,
-        "name": "Wait 9 days (to day 30)",
-        "type": "wait",
-        "parent": "65d2e550-3f36-598a-a12e-100b28079087",
-        "parentKey": "8d6cc74e-2a8d-5218-a33f-e78361f548eb",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 9,
-            "when": "after"
-          },
-          "name": "Wait 9 days (to day 30)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "c63479c1-42cd-5028-b6cc-aee69ca5103b"
-      },
-      {
-        "id": "c63479c1-42cd-5028-b6cc-aee69ca5103b",
-        "order": 18,
-        "name": "Touch 6 / Day 30 - Permission check (E)",
-        "type": "sms",
-        "parent": "65d2e550-3f36-598a-a12e-100b28079087",
-        "parentKey": "b2eb2f95-0665-5f81-ae3e-ba0425a4220e",
-        "attributes": {
-          "body": "Hey {{contact.first_name}}, being respectful of your time here. Do you want to hear from me again about {{contact.address1}}, or should I close this out?",
-          "attachments": []
-        },
-        "next": "6d01b0b5-4dbe-52aa-9fc3-2afa7a229e92"
-      },
-      {
-        "id": "6d01b0b5-4dbe-52aa-9fc3-2afa7a229e92",
-        "order": 19,
-        "name": "Wait 10 days (to day 40)",
-        "type": "wait",
-        "parent": "65d2e550-3f36-598a-a12e-100b28079087",
-        "parentKey": "c63479c1-42cd-5028-b6cc-aee69ca5103b",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 10,
-            "when": "after"
-          },
-          "name": "Wait 10 days (to day 40)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "53a461bb-0d54-5105-9682-c0de878057ad"
-      },
-      {
-        "id": "53a461bb-0d54-5105-9682-c0de878057ad",
-        "order": 20,
-        "name": "Touch 7 / Day 40 - Light check-in (E)",
-        "type": "sms",
-        "parent": "65d2e550-3f36-598a-a12e-100b28079087",
-        "parentKey": "6d01b0b5-4dbe-52aa-9fc3-2afa7a229e92",
-        "attributes": {
-          "body": "Hey {{contact.first_name}}, hope things are good. If your plans for {{contact.address1}} have shifted at all, I'd be glad to hear about it.",
-          "attachments": []
-        },
-        "next": "70512747-dbd8-5d24-bbb3-1444e917d7af"
-      },
-      {
-        "id": "70512747-dbd8-5d24-bbb3-1444e917d7af",
-        "order": 21,
-        "name": "Wait 9 days (to day 49)",
-        "type": "wait",
-        "parent": "65d2e550-3f36-598a-a12e-100b28079087",
-        "parentKey": "53a461bb-0d54-5105-9682-c0de878057ad",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 9,
-            "when": "after"
-          },
-          "name": "Wait 9 days (to day 49)",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "2ae3d41a-17cd-5597-8460-dca95d3ad26c"
-      },
-      {
-        "id": "2ae3d41a-17cd-5597-8460-dca95d3ad26c",
-        "order": 22,
-        "name": "Touch 8 / Day 49 - Close the loop (E)",
-        "type": "sms",
-        "parent": "65d2e550-3f36-598a-a12e-100b28079087",
-        "parentKey": "70512747-dbd8-5d24-bbb3-1444e917d7af",
-        "attributes": {
-          "body": "Hi {{contact.first_name}}, it's {{custom_values.sms_rep_name}} with {{custom_values.sms_business_name}}. I'll leave you be after this. Thanks for reading, and if anything changes with {{contact.address1}}, you know where to find me. Reply STOP to opt out.",
-          "attachments": []
-        },
-        "next": "74dc8c7a-93d0-5896-b4e8-e9423d341036"
-      },
-      {
-        "id": "74dc8c7a-93d0-5896-b4e8-e9423d341036",
-        "order": 23,
-        "name": "Wait 7 days for a late reply",
-        "type": "wait",
-        "parent": "65d2e550-3f36-598a-a12e-100b28079087",
-        "parentKey": "2ae3d41a-17cd-5597-8460-dca95d3ad26c",
-        "attributes": {
-          "type": "time",
-          "startAfter": {
-            "type": "days",
-            "value": 7,
-            "when": "after"
-          },
-          "name": "Wait 7 days for a late reply",
-          "cat": "",
-          "isHybridAction": true,
-          "hybridActionType": "wait",
-          "convertToMultipath": false,
-          "transitions": []
-        },
-        "next": "6211fda5-791e-5f08-8e9c-43e74aacf0c8"
-      },
-      {
-        "id": "6211fda5-791e-5f08-8e9c-43e74aacf0c8",
-        "order": 24,
-        "name": "Remove tag: sms-drip-active",
-        "type": "remove_contact_tag",
-        "parent": "65d2e550-3f36-598a-a12e-100b28079087",
-        "parentKey": "74dc8c7a-93d0-5896-b4e8-e9423d341036",
-        "attributes": {
-          "tags": [
-            "sms-drip-active"
-          ],
-          "type": "remove_contact_tag"
-        },
-        "next": "5942fdfe-8c60-5ee5-b9f8-a4eed2a16bfd"
-      },
-      {
-        "id": "5942fdfe-8c60-5ee5-b9f8-a4eed2a16bfd",
-        "order": 25,
-        "name": "Add tag: sms-drip-complete-no-reply",
-        "type": "add_contact_tag",
-        "parent": "65d2e550-3f36-598a-a12e-100b28079087",
-        "parentKey": "6211fda5-791e-5f08-8e9c-43e74aacf0c8",
-        "attributes": {
-          "tags": [
-            "sms-drip-complete-no-reply"
-          ]
         }
       },
       {
@@ -2008,20 +1139,6 @@
             "sms-drip-start"
           ],
           "type": "remove_contact_tag"
-        },
-        "next": "422040d5-4815-569e-be0c-171551e7cb4a"
-      },
-      {
-        "id": "422040d5-4815-569e-be0c-171551e7cb4a",
-        "order": 3,
-        "name": "Add tag: sms-blocked-gate",
-        "type": "add_contact_tag",
-        "parent": "d45089ca-b649-582c-a375-2b13e185aa05",
-        "parentKey": "a18b3926-9665-531a-8249-7aebde38ed53",
-        "attributes": {
-          "tags": [
-            "sms-blocked-gate"
-          ]
         }
       }
     ]

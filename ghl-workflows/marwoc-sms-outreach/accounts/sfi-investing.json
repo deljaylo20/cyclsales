@@ -3,11 +3,13 @@
   "location_id": "REPLACE_LOCATION_ID",
   "pipeline_id": "REPLACE_PIPELINE_ID",
   "stage_interested_id": "REPLACE_STAGE_ID_REPLIED_INTERESTED",
-  "stage_review_id": "REPLACE_STAGE_ID_REPLIED_NEEDS_REVIEW",
-  "stage_suppressed_id": "REPLACE_STAGE_ID_SUPPRESSED",
-  "setter_user_ids": ["REPLACE_SETTER_USER_ID_1", "REPLACE_SETTER_USER_ID_2"],
+  "stage_replied_id": "REPLACE_STAGE_ID_REPLIED",
+  "setter_user_ids": [
+    "REPLACE_SETTER_USER_ID_1",
+    "REPLACE_SETTER_USER_ID_2"
+  ],
   "partner_dnc_webhook_url": "REPLACE_CLARK_INBOUND_WEBHOOK_URL",
   "partner_label": "Clark Home Improvement",
-  "drip_batch_size": 20,
+  "drip_batch_size": 15,
   "drip_interval_minutes": 30
 }

@@ -1,7 +1,7 @@
 {
-  "_id": "5d99330a-db2b-5f8c-9a16-e0c1d17c3ded",
+  "_id": "351e2393-802d-53f9-bedb-418a7e9b591b",
   "locationId": "REPLACE_LOCATION_ID",
-  "name": "MARWOC | 05 Reply Tagger: Not Interested / Wrong Number",
+  "name": "MARWOC | 05 Reply: Not Interested (suppress)",
   "status": "draft",
   "version": 1,
   "dataVersion": 1,
@@ -19,11 +19,11 @@
   "eventStartDate": null,
   "window": null,
   "workflowNote": null,
-  "id": "5d99330a-db2b-5f8c-9a16-e0c1d17c3ded",
+  "id": "351e2393-802d-53f9-bedb-418a7e9b591b",
   "workflowData": {
     "templates": [
       {
-        "id": "c4a31953-f4c2-56d2-9b22-7a06f229fe43",
+        "id": "d7f0251f-ccc8-5a41-b21f-d4c399eea47f",
         "order": 0,
         "name": "From outreach?",
         "type": "if_else",
@@ -34,11 +34,11 @@
           "conditionName": "From outreach?",
           "branches": [
             {
-              "id": "60a01a74-7af3-520c-97d7-eed535e7aefb",
+              "id": "737a273a-bfc5-5d67-9c54-ab69d85b6a7b",
               "name": "Yes",
               "segments": [
                 {
-                  "__segmentId": "5584ad73-a873-5a38-84c4-855506f16de9",
+                  "__segmentId": "02ef2851-5420-50a8-aabd-1f62f128fce7",
                   "operator": "and",
                   "conditions": [
                     {
@@ -47,11 +47,10 @@
                       "conditionOperator": "index-of-true",
                       "conditionValue": [
                         "sms-drip-active",
-                        "sms-drip-complete-no-reply",
                         "sms-replied"
                       ],
                       "__customFieldType__": "standard",
-                      "__conditionId": "4f1664fd-5399-5221-bdbd-95c8559ce68d",
+                      "__conditionId": "7268d968-5b55-5d2b-8975-0633a6cb9bf9",
                       "ifElseNodeId": "",
                       "isWait": false
                     }
@@ -68,14 +67,14 @@
         "cat": "conditions",
         "nodeType": "condition-node",
         "next": [
-          "60a01a74-7af3-520c-97d7-eed535e7aefb",
-          "4b665637-6037-5201-aa2b-ba1a0b258b49"
+          "737a273a-bfc5-5d67-9c54-ab69d85b6a7b",
+          "c791694c-1e67-55d6-8195-0050d56903ae"
         ]
       },
       {
-        "id": "60a01a74-7af3-520c-97d7-eed535e7aefb",
-        "parent": "c4a31953-f4c2-56d2-9b22-7a06f229fe43",
-        "parentKey": "c4a31953-f4c2-56d2-9b22-7a06f229fe43",
+        "id": "737a273a-bfc5-5d67-9c54-ab69d85b6a7b",
+        "parent": "d7f0251f-ccc8-5a41-b21f-d4c399eea47f",
+        "parentKey": "d7f0251f-ccc8-5a41-b21f-d4c399eea47f",
         "order": 1,
         "name": "Yes",
         "type": "if_else",
@@ -87,58 +86,45 @@
           "branches": []
         },
         "sibling": [
-          "4b665637-6037-5201-aa2b-ba1a0b258b49"
+          "c791694c-1e67-55d6-8195-0050d56903ae"
         ],
         "comments": [],
         "nodeType": "branch-yes",
-        "next": "7ce200f7-e6b9-5570-8d83-95dbe13ab16a"
+        "next": "3524ba57-0674-5c45-99a1-e28c4b559c88"
       },
       {
-        "id": "7ce200f7-e6b9-5570-8d83-95dbe13ab16a",
+        "id": "3524ba57-0674-5c45-99a1-e28c4b559c88",
         "order": 2,
         "name": "Add tag: sms-not-interested",
         "type": "add_contact_tag",
-        "parent": "60a01a74-7af3-520c-97d7-eed535e7aefb",
-        "parentKey": "60a01a74-7af3-520c-97d7-eed535e7aefb",
+        "parent": "737a273a-bfc5-5d67-9c54-ab69d85b6a7b",
+        "parentKey": "737a273a-bfc5-5d67-9c54-ab69d85b6a7b",
         "attributes": {
           "tags": [
             "sms-not-interested"
           ]
         },
-        "next": "885f6425-f770-5677-bd8f-3bfc505a0b0f"
+        "next": "a5fc08a2-30cd-568b-b077-9fe97b2e17ea"
       },
       {
-        "id": "885f6425-f770-5677-bd8f-3bfc505a0b0f",
+        "id": "a5fc08a2-30cd-568b-b077-9fe97b2e17ea",
         "order": 3,
         "name": "DND: SMS only",
         "type": "dnd_contact",
-        "parent": "60a01a74-7af3-520c-97d7-eed535e7aefb",
-        "parentKey": "7ce200f7-e6b9-5570-8d83-95dbe13ab16a",
+        "parent": "737a273a-bfc5-5d67-9c54-ab69d85b6a7b",
+        "parentKey": "3524ba57-0674-5c45-99a1-e28c4b559c88",
         "attributes": {
           "type": "dnd_contact",
           "dnd_contact": "enable_specific",
           "specific_channels": [
             "SMS"
           ]
-        },
-        "next": "d6ef5d84-5e2d-5dc9-92a0-d05070bfa76c"
-      },
-      {
-        "id": "d6ef5d84-5e2d-5dc9-92a0-d05070bfa76c",
-        "order": 4,
-        "name": "Note: not interested / wrong number",
-        "type": "add_notes",
-        "parent": "60a01a74-7af3-520c-97d7-eed535e7aefb",
-        "parentKey": "885f6425-f770-5677-bd8f-3bfc505a0b0f",
-        "attributes": {
-          "html": "SMS suppressed. Seller replied: \"{{message.body}}\"",
-          "type": "add_notes"
         }
       },
       {
-        "id": "4b665637-6037-5201-aa2b-ba1a0b258b49",
-        "parent": "c4a31953-f4c2-56d2-9b22-7a06f229fe43",
-        "parentKey": "c4a31953-f4c2-56d2-9b22-7a06f229fe43",
+        "id": "c791694c-1e67-55d6-8195-0050d56903ae",
+        "parent": "d7f0251f-ccc8-5a41-b21f-d4c399eea47f",
+        "parentKey": "d7f0251f-ccc8-5a41-b21f-d4c399eea47f",
         "order": 1,
         "name": "None",
         "type": "if_else",
@@ -147,7 +133,7 @@
           "else": true
         },
         "sibling": [
-          "60a01a74-7af3-520c-97d7-eed535e7aefb"
+          "737a273a-bfc5-5d67-9c54-ab69d85b6a7b"
         ],
         "nodeType": "branch-no"
       }
@@ -156,12 +142,12 @@
   "scheduledPauseDates": [],
   "_triggers": [
     {
-      "id": "7fb6f80e14c351a583f8",
+      "id": "470bc95816c754fa922a",
       "deleted": false,
       "active": true,
       "actions": [
         {
-          "workflow_id": "5d99330a-db2b-5f8c-9a16-e0c1d17c3ded",
+          "workflow_id": "351e2393-802d-53f9-bedb-418a7e9b591b",
           "type": "add_to_workflow"
         }
       ],
@@ -184,16 +170,10 @@
             "not for sale",
             "already sold",
             "sold it",
-            "not looking to sell",
-            "never selling",
             "wrong number",
             "wrong person",
             "don't own",
-            "dont own",
-            "do not own",
-            "never owned",
-            "not my house",
-            "not my property"
+            "dont own"
           ],
           "title": "Contains phrase",
           "type": "string",
@@ -202,7 +182,7 @@
       ],
       "type": "customer_reply",
       "masterType": "highlevel",
-      "workflow_id": "5d99330a-db2b-5f8c-9a16-e0c1d17c3ded",
+      "workflow_id": "351e2393-802d-53f9-bedb-418a7e9b591b",
       "location_id": "REPLACE_LOCATION_ID",
       "name": "Customer Replied",
       "belongs_to": "workflow",

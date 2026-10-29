@@ -25,7 +25,7 @@
       {
         "id": "9ccc03fb-36ae-5829-86cc-30d16ef9d5ed",
         "order": 0,
-        "name": "Wait 1 min (let taggers 03/05/06 run first)",
+        "name": "Wait 1 min (let 03/05/06 tag the reply first)",
         "type": "wait",
         "attributes": {
           "type": "time",
@@ -34,7 +34,7 @@
             "value": 1,
             "when": "after"
           },
-          "name": "Wait 1 min (let taggers 03/05/06 run first)",
+          "name": "Wait 1 min (let 03/05/06 tag the reply first)",
           "cat": "",
           "isHybridAction": true,
           "hybridActionType": "wait",
@@ -57,7 +57,7 @@
           "branches": [
             {
               "id": "34dbfe55-9afd-53f5-8165-5a420242bb2f",
-              "name": "Suppressed (opt-out / not interested)",
+              "name": "Stop / not interested",
               "segments": [
                 {
                   "__segmentId": "93e2e164-1fdc-5faf-abc3-8e320d1b17df",
@@ -81,8 +81,7 @@
                       "conditionSubType": "tags",
                       "conditionOperator": "index-of-true",
                       "conditionValue": [
-                        "sms-drip-active",
-                        "sms-drip-complete-no-reply"
+                        "sms-drip-active"
                       ],
                       "__customFieldType__": "standard",
                       "__conditionId": "f114d50e-94f0-56fb-903c-9451d1c54ea6",
@@ -98,7 +97,7 @@
             },
             {
               "id": "d9214cbc-a10c-5149-9840-6dbb6c243381",
-              "name": "Interested",
+              "name": "Yes / interested",
               "segments": [
                 {
                   "__segmentId": "08b1e39e-6129-50cc-a51c-ccdf28b3da7a",
@@ -121,8 +120,7 @@
                       "conditionSubType": "tags",
                       "conditionOperator": "index-of-true",
                       "conditionValue": [
-                        "sms-drip-active",
-                        "sms-drip-complete-no-reply"
+                        "sms-drip-active"
                       ],
                       "__customFieldType__": "standard",
                       "__conditionId": "44f3c686-6cb1-553e-97d4-29f0a3150b7c",
@@ -138,7 +136,7 @@
             },
             {
               "id": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
-              "name": "Other reply from outreach",
+              "name": "Any other reply",
               "segments": [
                 {
                   "__segmentId": "a4e0c02b-5a48-5d22-b4ec-7af09b3f3443",
@@ -149,8 +147,7 @@
                       "conditionSubType": "tags",
                       "conditionOperator": "index-of-true",
                       "conditionValue": [
-                        "sms-drip-active",
-                        "sms-drip-complete-no-reply"
+                        "sms-drip-active"
                       ],
                       "__customFieldType__": "standard",
                       "__conditionId": "09c2f52f-9b0b-528e-b4c2-5f6909796a5a",
@@ -181,7 +178,7 @@
         "parent": "38ceaf6e-6105-57dc-a251-27177828dcb2",
         "parentKey": "38ceaf6e-6105-57dc-a251-27177828dcb2",
         "order": 2,
-        "name": "Suppressed (opt-out / not interested)",
+        "name": "Stop / not interested",
         "type": "if_else",
         "cat": "conditions",
         "attributes": {
@@ -202,14 +199,13 @@
       {
         "id": "4a766ac8-fbe9-5f9a-9519-ec843c9a3c43",
         "order": 3,
-        "name": "Remove tag: sms-drip-active, sms-drip-complete-no-reply",
+        "name": "Remove tag: sms-drip-active",
         "type": "remove_contact_tag",
         "parent": "34dbfe55-9afd-53f5-8165-5a420242bb2f",
         "parentKey": "34dbfe55-9afd-53f5-8165-5a420242bb2f",
         "attributes": {
           "tags": [
-            "sms-drip-active",
-            "sms-drip-complete-no-reply"
+            "sms-drip-active"
           ],
           "type": "remove_contact_tag"
         },
@@ -233,7 +229,7 @@
         "parent": "38ceaf6e-6105-57dc-a251-27177828dcb2",
         "parentKey": "38ceaf6e-6105-57dc-a251-27177828dcb2",
         "order": 2,
-        "name": "Interested",
+        "name": "Yes / interested",
         "type": "if_else",
         "cat": "conditions",
         "attributes": {
@@ -254,14 +250,13 @@
       {
         "id": "c96ac40a-31a4-5248-828d-07c501519c58",
         "order": 3,
-        "name": "Remove tag: sms-drip-active, sms-drip-complete-no-reply",
+        "name": "Remove tag: sms-drip-active",
         "type": "remove_contact_tag",
         "parent": "d9214cbc-a10c-5149-9840-6dbb6c243381",
         "parentKey": "d9214cbc-a10c-5149-9840-6dbb6c243381",
         "attributes": {
           "tags": [
-            "sms-drip-active",
-            "sms-drip-complete-no-reply"
+            "sms-drip-active"
           ],
           "type": "remove_contact_tag"
         },
@@ -332,7 +327,7 @@
           "pipeline_stage_id": "REPLACE_STAGE_ID_REPLIED_INTERESTED",
           "opportunity_name": "{{contact.first_name}} {{contact.last_name}} - {{contact.address1}}",
           "opportunity_status": "open",
-          "opportunity_source": "Seller SMS Outreach",
+          "opportunity_source": "",
           "monetary_value": ""
         },
         "next": "4f47e96c-fc57-5ec0-a1e5-93b9616be1b9"
@@ -340,62 +335,43 @@
       {
         "id": "4f47e96c-fc57-5ec0-a1e5-93b9616be1b9",
         "order": 7,
-        "name": "Text the assigned setter",
-        "type": "internal_notification",
-        "parent": "d9214cbc-a10c-5149-9840-6dbb6c243381",
-        "parentKey": "c64f3fd0-ef4d-5d3a-9a75-654572a06134",
-        "attributes": {
-          "type": "sms",
-          "sms": {
-            "userType": "assign",
-            "body": "HOT - SMS reply from {{contact.first_name}} about {{contact.address1}}. Open the conversation and reply fast.",
-            "attachments": []
-          }
-        },
-        "next": "fc9cf759-400e-519b-b4a2-501a7bc87b9e"
-      },
-      {
-        "id": "fc9cf759-400e-519b-b4a2-501a7bc87b9e",
-        "order": 8,
-        "name": "Push notification to assigned setter",
-        "type": "internal_notification",
-        "parent": "d9214cbc-a10c-5149-9840-6dbb6c243381",
-        "parentKey": "4f47e96c-fc57-5ec0-a1e5-93b9616be1b9",
-        "attributes": {
-          "type": "notification",
-          "notification": {
-            "type": "send_notification",
-            "redirectPage": "conversation",
-            "body": "{{contact.first_name}} replied to the seller SMS about {{contact.address1}}.",
-            "title": "HOT - Seller replied: {{contact.first_name}}",
-            "userType": "assign"
-          }
-        },
-        "next": "1ffc2b11-e139-59bb-bee4-daac95382f14"
-      },
-      {
-        "id": "1ffc2b11-e139-59bb-bee4-daac95382f14",
-        "order": 9,
         "name": "Task for setter",
         "type": "task-notification",
         "parent": "d9214cbc-a10c-5149-9840-6dbb6c243381",
-        "parentKey": "fc9cf759-400e-519b-b4a2-501a7bc87b9e",
+        "parentKey": "c64f3fd0-ef4d-5d3a-9a75-654572a06134",
         "attributes": {
-          "title": "Call now: {{contact.first_name}} - {{contact.address1}}",
-          "body": "Replied to seller SMS outreach. Read the conversation, then call or reply.",
+          "title": "Seller replied: {{contact.first_name}} - {{contact.address1}}",
+          "body": "Replied to seller SMS outreach. Read the conversation and follow up.",
           "assignedTo": "contact.assigned_user",
           "dueDate": "1",
           "type": "task_notification",
           "__customInputs__": {}
         },
-        "workflowsActionType": "INTERNAL"
+        "workflowsActionType": "INTERNAL",
+        "next": "fc9cf759-400e-519b-b4a2-501a7bc87b9e"
+      },
+      {
+        "id": "fc9cf759-400e-519b-b4a2-501a7bc87b9e",
+        "order": 8,
+        "name": "Text the assigned setter",
+        "type": "internal_notification",
+        "parent": "d9214cbc-a10c-5149-9840-6dbb6c243381",
+        "parentKey": "4f47e96c-fc57-5ec0-a1e5-93b9616be1b9",
+        "attributes": {
+          "type": "sms",
+          "sms": {
+            "userType": "assign",
+            "body": "Seller SMS reply from {{contact.first_name}} about {{contact.address1}}. Check the conversation.",
+            "attachments": []
+          }
+        }
       },
       {
         "id": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
         "parent": "38ceaf6e-6105-57dc-a251-27177828dcb2",
         "parentKey": "38ceaf6e-6105-57dc-a251-27177828dcb2",
         "order": 2,
-        "name": "Other reply from outreach",
+        "name": "Any other reply",
         "type": "if_else",
         "cat": "conditions",
         "attributes": {
@@ -416,54 +392,39 @@
       {
         "id": "efdd153a-8b1c-55f4-a36f-526434ac6fea",
         "order": 3,
-        "name": "Add tag: sms-reply-needs-review",
-        "type": "add_contact_tag",
+        "name": "Remove tag: sms-drip-active",
+        "type": "remove_contact_tag",
         "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
         "parentKey": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
         "attributes": {
           "tags": [
-            "sms-reply-needs-review"
-          ]
+            "sms-drip-active"
+          ],
+          "type": "remove_contact_tag"
         },
         "next": "80a1988b-8955-5a6f-a2e9-27ba95228378"
       },
       {
         "id": "80a1988b-8955-5a6f-a2e9-27ba95228378",
         "order": 4,
-        "name": "Remove tag: sms-drip-active, sms-drip-complete-no-reply",
-        "type": "remove_contact_tag",
+        "name": "Add tag: sms-replied",
+        "type": "add_contact_tag",
         "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
         "parentKey": "efdd153a-8b1c-55f4-a36f-526434ac6fea",
         "attributes": {
           "tags": [
-            "sms-drip-active",
-            "sms-drip-complete-no-reply"
-          ],
-          "type": "remove_contact_tag"
+            "sms-replied"
+          ]
         },
         "next": "245e9324-7d29-54f5-8561-1e85c2d2dcef"
       },
       {
         "id": "245e9324-7d29-54f5-8561-1e85c2d2dcef",
         "order": 5,
-        "name": "Add tag: sms-replied",
-        "type": "add_contact_tag",
-        "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
-        "parentKey": "80a1988b-8955-5a6f-a2e9-27ba95228378",
-        "attributes": {
-          "tags": [
-            "sms-replied"
-          ]
-        },
-        "next": "187b8916-95d0-5834-aebc-cac2a738b1fe"
-      },
-      {
-        "id": "187b8916-95d0-5834-aebc-cac2a738b1fe",
-        "order": 6,
         "name": "Round robin to setters",
         "type": "assign_user",
         "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
-        "parentKey": "245e9324-7d29-54f5-8561-1e85c2d2dcef",
+        "parentKey": "80a1988b-8955-5a6f-a2e9-27ba95228378",
         "attributes": {
           "only_unassigned_contact": true,
           "total_index": 2,
@@ -492,25 +453,43 @@
           ],
           "type": "assign_user"
         },
+        "next": "187b8916-95d0-5834-aebc-cac2a738b1fe"
+      },
+      {
+        "id": "187b8916-95d0-5834-aebc-cac2a738b1fe",
+        "order": 6,
+        "name": "Create/update opportunity: Replied",
+        "type": "create_opportunity",
+        "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
+        "parentKey": "245e9324-7d29-54f5-8561-1e85c2d2dcef",
+        "attributes": {
+          "fields": [],
+          "type": "create_opportunity",
+          "pipeline_id": "REPLACE_PIPELINE_ID",
+          "pipeline_stage_id": "REPLACE_STAGE_ID_REPLIED",
+          "opportunity_name": "{{contact.first_name}} {{contact.last_name}} - {{contact.address1}}",
+          "opportunity_status": "open",
+          "opportunity_source": "",
+          "monetary_value": ""
+        },
         "next": "863a9cd9-6579-5b2b-95d7-ba026f41891d"
       },
       {
         "id": "863a9cd9-6579-5b2b-95d7-ba026f41891d",
         "order": 7,
-        "name": "Create/update opportunity: Replied - Needs Review",
-        "type": "create_opportunity",
+        "name": "Task for setter",
+        "type": "task-notification",
         "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
         "parentKey": "187b8916-95d0-5834-aebc-cac2a738b1fe",
         "attributes": {
-          "fields": [],
-          "type": "create_opportunity",
-          "pipeline_id": "REPLACE_PIPELINE_ID",
-          "pipeline_stage_id": "REPLACE_STAGE_ID_REPLIED_NEEDS_REVIEW",
-          "opportunity_name": "{{contact.first_name}} {{contact.last_name}} - {{contact.address1}}",
-          "opportunity_status": "open",
-          "opportunity_source": "Seller SMS Outreach",
-          "monetary_value": ""
+          "title": "Seller replied: {{contact.first_name}} - {{contact.address1}}",
+          "body": "Replied to seller SMS outreach. Read the conversation and follow up.",
+          "assignedTo": "contact.assigned_user",
+          "dueDate": "1",
+          "type": "task_notification",
+          "__customInputs__": {}
         },
+        "workflowsActionType": "INTERNAL",
         "next": "d7699747-ce69-5dcb-bab3-d0f9e00972f9"
       },
       {
@@ -524,47 +503,10 @@
           "type": "sms",
           "sms": {
             "userType": "assign",
-            "body": "SMS reply from {{contact.first_name}} about {{contact.address1}}. Open the conversation and reply fast.",
+            "body": "Seller SMS reply from {{contact.first_name}} about {{contact.address1}}. Check the conversation.",
             "attachments": []
           }
-        },
-        "next": "5d1a7f5b-1496-54b9-95bb-caba511bb8aa"
-      },
-      {
-        "id": "5d1a7f5b-1496-54b9-95bb-caba511bb8aa",
-        "order": 9,
-        "name": "Push notification to assigned setter",
-        "type": "internal_notification",
-        "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
-        "parentKey": "d7699747-ce69-5dcb-bab3-d0f9e00972f9",
-        "attributes": {
-          "type": "notification",
-          "notification": {
-            "type": "send_notification",
-            "redirectPage": "conversation",
-            "body": "{{contact.first_name}} replied to the seller SMS about {{contact.address1}}.",
-            "title": "Seller replied: {{contact.first_name}}",
-            "userType": "assign"
-          }
-        },
-        "next": "88761058-a80e-5b6d-81b4-537d09a2fcf7"
-      },
-      {
-        "id": "88761058-a80e-5b6d-81b4-537d09a2fcf7",
-        "order": 10,
-        "name": "Task for setter",
-        "type": "task-notification",
-        "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
-        "parentKey": "5d1a7f5b-1496-54b9-95bb-caba511bb8aa",
-        "attributes": {
-          "title": "Review reply: {{contact.first_name}} - {{contact.address1}}",
-          "body": "Replied to seller SMS outreach. Read the conversation, then call or reply.",
-          "assignedTo": "contact.assigned_user",
-          "dueDate": "1",
-          "type": "task_notification",
-          "__customInputs__": {}
-        },
-        "workflowsActionType": "INTERNAL"
+        }
       },
       {
         "id": "40bf099a-ad2c-54c5-af6d-8377c2c0d7be",
