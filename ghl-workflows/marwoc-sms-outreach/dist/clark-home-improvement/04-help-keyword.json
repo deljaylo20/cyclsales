@@ -1,0 +1,56 @@
+{
+  "name": "MARWOC | 04 HELP Keyword Auto-Reply",
+  "status": "draft",
+  "version": 1,
+  "timezone": "contact",
+  "stopOnResponse": false,
+  "allowMultiple": true,
+  "removeContactFromLastStep": true,
+  "autoMarkAsRead": false,
+  "triggers": [
+    {
+      "type": "customer_reply",
+      "name": "Customer replied HELP / INFO",
+      "active": true,
+      "conditions": [
+        {
+          "field": "message.type",
+          "operator": "==",
+          "value": "SMS"
+        },
+        {
+          "operator": "or",
+          "conditions": [
+            {
+              "field": "message.body",
+              "operator": "exact_match",
+              "value": "help"
+            },
+            {
+              "field": "message.body",
+              "operator": "exact_match",
+              "value": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "workflowData": {
+    "templates": [
+      {
+        "id": "db44c773-cded-5e42-bb24-aac9f48b9aa3",
+        "order": 0,
+        "name": "HELP auto-reply (business identity)",
+        "type": "sms",
+        "attributes": {
+          "body": "{{custom_values.sms_business_name}}: you're getting texts from {{custom_values.sms_rep_name}} about your property. Questions? Call {{custom_values.sms_business_phone}}. Msg & data rates may apply. Reply STOP to opt out.",
+          "attachments": [],
+          "fromNumber": "default"
+        },
+        "parentKey": null,
+        "next": null
+      }
+    ]
+  }
+}

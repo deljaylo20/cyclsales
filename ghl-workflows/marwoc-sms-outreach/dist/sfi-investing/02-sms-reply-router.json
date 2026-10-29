@@ -1,0 +1,723 @@
+{
+  "name": "MARWOC | 02 SMS Reply Router (round robin)",
+  "status": "draft",
+  "version": 1,
+  "timezone": "contact",
+  "stopOnResponse": false,
+  "allowMultiple": true,
+  "removeContactFromLastStep": true,
+  "autoMarkAsRead": false,
+  "triggers": [
+    {
+      "type": "customer_reply",
+      "name": "Customer replied (SMS)",
+      "active": true,
+      "conditions": [
+        {
+          "field": "message.type",
+          "operator": "==",
+          "value": "SMS"
+        }
+      ]
+    }
+  ],
+  "workflowData": {
+    "templates": [
+      {
+        "id": "9ccc03fb-36ae-5829-86cc-30d16ef9d5ed",
+        "order": 0,
+        "name": "Came from the drip?",
+        "type": "if_else",
+        "attributes": {
+          "branches": [
+            {
+              "id": "1311acfe-fa79-507a-9764-18242cd6a6f2",
+              "name": "Yes",
+              "isNoneBranch": false,
+              "segments": [
+                {
+                  "operator": "or",
+                  "conditions": [
+                    {
+                      "field": "contact.tags",
+                      "operator": "contains",
+                      "value": "sms-drip-active"
+                    },
+                    {
+                      "field": "contact.tags",
+                      "operator": "contains",
+                      "value": "sms-drip-complete-no-reply"
+                    }
+                  ]
+                }
+              ],
+              "next": "a8953eda-7d8f-5f83-bfe9-162d10b21b40"
+            },
+            {
+              "id": "2805a214-bbe5-533c-b780-d67603b94666",
+              "name": "None (not an outreach lead)",
+              "isNoneBranch": true,
+              "next": null
+            }
+          ]
+        },
+        "parentKey": null,
+        "next": [
+          "1311acfe-fa79-507a-9764-18242cd6a6f2",
+          "2805a214-bbe5-533c-b780-d67603b94666"
+        ]
+      },
+      {
+        "id": "a8953eda-7d8f-5f83-bfe9-162d10b21b40",
+        "order": 1,
+        "name": "Remove tag: sms-drip-active",
+        "type": "remove_contact_tag",
+        "attributes": {
+          "tags": [
+            "sms-drip-active"
+          ]
+        },
+        "parentKey": "9ccc03fb-36ae-5829-86cc-30d16ef9d5ed",
+        "next": "79ba08bc-9781-5766-85b5-ac96617a3596",
+        "parent": "1311acfe-fa79-507a-9764-18242cd6a6f2"
+      },
+      {
+        "id": "79ba08bc-9781-5766-85b5-ac96617a3596",
+        "order": 2,
+        "name": "Add tag: sms-replied",
+        "type": "add_contact_tag",
+        "attributes": {
+          "tags": [
+            "sms-replied"
+          ]
+        },
+        "parentKey": "a8953eda-7d8f-5f83-bfe9-162d10b21b40",
+        "next": "8b78d00b-f675-5e7c-be64-de730be36f86"
+      },
+      {
+        "id": "8b78d00b-f675-5e7c-be64-de730be36f86",
+        "order": 3,
+        "name": "Classify reply",
+        "type": "if_else",
+        "attributes": {
+          "branches": [
+            {
+              "id": "18a56eb5-6fee-5538-8da3-41d34e90168a",
+              "name": "Opt-out language (handled by 03)",
+              "isNoneBranch": false,
+              "segments": [
+                {
+                  "operator": "or",
+                  "conditions": [
+                    {
+                      "field": "message.body",
+                      "operator": "exact_match",
+                      "value": "stop"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "exact_match",
+                      "value": "stopall"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "exact_match",
+                      "value": "unsubscribe"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "exact_match",
+                      "value": "cancel"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "exact_match",
+                      "value": "end"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "exact_match",
+                      "value": "quit"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "exact_match",
+                      "value": "optout"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "exact_match",
+                      "value": "revoke"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "exact_match",
+                      "value": "stop all"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "stop texting"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "stop messaging"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "stop contacting"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "remove me"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "take me off"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "do not text"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "don't text"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "dont text"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "do not contact"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "don't contact"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "opt out"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "unsubscribe"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "lose my number"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "leave me alone"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "no more texts"
+                    }
+                  ]
+                }
+              ],
+              "next": null
+            },
+            {
+              "id": "ef301c90-3c6b-589a-a967-0aeb23fe24de",
+              "name": "Wrong number",
+              "isNoneBranch": false,
+              "segments": [
+                {
+                  "operator": "or",
+                  "conditions": [
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "wrong number"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "wrong person"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "don't own"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "dont own"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "do not own"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "never owned"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "not my house"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "not my property"
+                    }
+                  ]
+                }
+              ],
+              "next": "700314ee-926b-5edf-9a66-8c451a150b15"
+            },
+            {
+              "id": "a2e24e36-f2fd-5179-9dae-5c01161644ce",
+              "name": "Not interested",
+              "isNoneBranch": false,
+              "segments": [
+                {
+                  "operator": "or",
+                  "conditions": [
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "not interested"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "no thanks"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "no thank you"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "not selling"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "not for sale"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "already sold"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "sold it"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "not looking to sell"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "never selling"
+                    }
+                  ]
+                }
+              ],
+              "next": "6b015c50-44c6-5fad-8727-8b78a82441f7"
+            },
+            {
+              "id": "0b23d865-88fd-5e31-9e4b-30cb10c03679",
+              "name": "Interested",
+              "isNoneBranch": false,
+              "segments": [
+                {
+                  "operator": "or",
+                  "conditions": [
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "yes"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "yeah"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "yep"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "sure"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "maybe"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "how much"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "what would you"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "make an offer"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "make me an offer"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "your offer"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "price"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "depends"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "call me"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "possibly"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "thinking about it"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "open to"
+                    },
+                    {
+                      "field": "message.body",
+                      "operator": "contains_phrase",
+                      "value": "what's your number"
+                    }
+                  ]
+                }
+              ],
+              "next": "8ae20f7d-ab1e-536c-a900-bd2a2a57e903"
+            },
+            {
+              "id": "f9d497d7-2a45-53e7-b4fa-86c3d2a4346f",
+              "name": "None (needs a human)",
+              "isNoneBranch": true,
+              "next": "3c856591-d2f5-5366-9bc8-19b7f1b74b5b"
+            }
+          ]
+        },
+        "parentKey": "79ba08bc-9781-5766-85b5-ac96617a3596",
+        "next": [
+          "18a56eb5-6fee-5538-8da3-41d34e90168a",
+          "ef301c90-3c6b-589a-a967-0aeb23fe24de",
+          "a2e24e36-f2fd-5179-9dae-5c01161644ce",
+          "0b23d865-88fd-5e31-9e4b-30cb10c03679",
+          "f9d497d7-2a45-53e7-b4fa-86c3d2a4346f"
+        ]
+      },
+      {
+        "id": "700314ee-926b-5edf-9a66-8c451a150b15",
+        "order": 4,
+        "name": "Add tag: sms-wrong-number",
+        "type": "add_contact_tag",
+        "attributes": {
+          "tags": [
+            "sms-wrong-number"
+          ]
+        },
+        "parentKey": "8b78d00b-f675-5e7c-be64-de730be36f86",
+        "next": "0db7df26-d13f-54d4-92a0-0170fe01a51c",
+        "parent": "ef301c90-3c6b-589a-a967-0aeb23fe24de"
+      },
+      {
+        "id": "0db7df26-d13f-54d4-92a0-0170fe01a51c",
+        "order": 5,
+        "name": "DND: SMS",
+        "type": "dnd_contact",
+        "attributes": {
+          "dnd": true,
+          "channels": [
+            "sms"
+          ]
+        },
+        "parentKey": "700314ee-926b-5edf-9a66-8c451a150b15",
+        "next": "869e42db-7ee2-54a5-b898-f55cd1216e6f"
+      },
+      {
+        "id": "869e42db-7ee2-54a5-b898-f55cd1216e6f",
+        "order": 6,
+        "name": "Note: wrong number",
+        "type": "add_note",
+        "attributes": {
+          "body": "Wrong number per SMS reply: \"{{message.body}}\". SMS suppressed."
+        },
+        "parentKey": "0db7df26-d13f-54d4-92a0-0170fe01a51c",
+        "next": null
+      },
+      {
+        "id": "6b015c50-44c6-5fad-8727-8b78a82441f7",
+        "order": 7,
+        "name": "Add tag: sms-not-interested",
+        "type": "add_contact_tag",
+        "attributes": {
+          "tags": [
+            "sms-not-interested"
+          ]
+        },
+        "parentKey": "8b78d00b-f675-5e7c-be64-de730be36f86",
+        "next": "e66a27ff-80c3-597e-8ebd-ff7f8fa3b167",
+        "parent": "a2e24e36-f2fd-5179-9dae-5c01161644ce"
+      },
+      {
+        "id": "e66a27ff-80c3-597e-8ebd-ff7f8fa3b167",
+        "order": 8,
+        "name": "DND: SMS",
+        "type": "dnd_contact",
+        "attributes": {
+          "dnd": true,
+          "channels": [
+            "sms"
+          ]
+        },
+        "parentKey": "6b015c50-44c6-5fad-8727-8b78a82441f7",
+        "next": "e701ac77-54c7-510b-8526-6dd0842436b7"
+      },
+      {
+        "id": "e701ac77-54c7-510b-8526-6dd0842436b7",
+        "order": 9,
+        "name": "Note: not interested",
+        "type": "add_note",
+        "attributes": {
+          "body": "Not interested per SMS reply: \"{{message.body}}\". SMS suppressed."
+        },
+        "parentKey": "e66a27ff-80c3-597e-8ebd-ff7f8fa3b167",
+        "next": null
+      },
+      {
+        "id": "8ae20f7d-ab1e-536c-a900-bd2a2a57e903",
+        "order": 10,
+        "name": "Add tag: sms-interested",
+        "type": "add_contact_tag",
+        "attributes": {
+          "tags": [
+            "sms-interested"
+          ]
+        },
+        "parentKey": "8b78d00b-f675-5e7c-be64-de730be36f86",
+        "next": "59a8438c-3500-5e8e-9df8-a80db8ace01c",
+        "parent": "0b23d865-88fd-5e31-9e4b-30cb10c03679"
+      },
+      {
+        "id": "59a8438c-3500-5e8e-9df8-a80db8ace01c",
+        "order": 11,
+        "name": "Round robin to setters",
+        "type": "assign_user",
+        "attributes": {
+          "userIds": [
+            "REPLACE_SETTER_USER_ID_1",
+            "REPLACE_SETTER_USER_ID_2"
+          ],
+          "trafficSplit": "equally",
+          "onlyUnassignedContact": true
+        },
+        "parentKey": "8ae20f7d-ab1e-536c-a900-bd2a2a57e903",
+        "next": "d4459310-332d-5d41-ac87-4e3f645d4181"
+      },
+      {
+        "id": "d4459310-332d-5d41-ac87-4e3f645d4181",
+        "order": 12,
+        "name": "Create/update opportunity: Replied - Interested",
+        "type": "create_opportunity",
+        "attributes": {
+          "pipelineId": "REPLACE_PIPELINE_ID",
+          "pipelineStageId": "REPLACE_STAGE_ID_REPLIED_INTERESTED",
+          "opportunityName": "{{contact.first_name}} {{contact.last_name}} - {{contact.address1}}",
+          "status": "open",
+          "allowBackward": false,
+          "allowDuplicate": false
+        },
+        "parentKey": "59a8438c-3500-5e8e-9df8-a80db8ace01c",
+        "next": "4ea33b05-1a6f-54cc-8922-445e37fd2684"
+      },
+      {
+        "id": "4ea33b05-1a6f-54cc-8922-445e37fd2684",
+        "order": 13,
+        "name": "Text the assigned setter",
+        "type": "internal_notification",
+        "attributes": {
+          "type": "sms",
+          "to": "assigned_user",
+          "body": "HOT - SMS reply from {{contact.first_name}} ({{contact.address1}}): \"{{message.body}}\" Reply fast."
+        },
+        "parentKey": "d4459310-332d-5d41-ac87-4e3f645d4181",
+        "next": "161103d9-ed6f-59a1-90d6-b2cb48a05b72"
+      },
+      {
+        "id": "161103d9-ed6f-59a1-90d6-b2cb48a05b72",
+        "order": 14,
+        "name": "Email the assigned setter",
+        "type": "internal_notification",
+        "attributes": {
+          "type": "email",
+          "to": "assigned_user",
+          "subject": "HOT SMS reply: {{contact.first_name}} - {{contact.address1}}",
+          "body": "{{contact.first_name}} replied: \"{{message.body}}\"<br>Phone: {{contact.phone}}<br>Open the conversation in the inbox and respond."
+        },
+        "parentKey": "4ea33b05-1a6f-54cc-8922-445e37fd2684",
+        "next": "c6aeacf0-a868-5290-b1d3-bbdde04a5e60"
+      },
+      {
+        "id": "c6aeacf0-a868-5290-b1d3-bbdde04a5e60",
+        "order": 15,
+        "name": "Task for setter",
+        "type": "add_task",
+        "attributes": {
+          "assignTo": "assigned_user",
+          "title": "Call now: {{contact.first_name}} - {{contact.address1}}",
+          "description": "Replied to seller SMS: \"{{message.body}}\"",
+          "dueIn": {
+            "value": 1,
+            "unit": "hours"
+          }
+        },
+        "parentKey": "161103d9-ed6f-59a1-90d6-b2cb48a05b72",
+        "next": null
+      },
+      {
+        "id": "3c856591-d2f5-5366-9bc8-19b7f1b74b5b",
+        "order": 16,
+        "name": "Add tag: sms-reply-needs-review",
+        "type": "add_contact_tag",
+        "attributes": {
+          "tags": [
+            "sms-reply-needs-review"
+          ]
+        },
+        "parentKey": "8b78d00b-f675-5e7c-be64-de730be36f86",
+        "next": "40e72be3-dd39-5c05-986e-e7511e87c029",
+        "parent": "f9d497d7-2a45-53e7-b4fa-86c3d2a4346f"
+      },
+      {
+        "id": "40e72be3-dd39-5c05-986e-e7511e87c029",
+        "order": 17,
+        "name": "Round robin to setters",
+        "type": "assign_user",
+        "attributes": {
+          "userIds": [
+            "REPLACE_SETTER_USER_ID_1",
+            "REPLACE_SETTER_USER_ID_2"
+          ],
+          "trafficSplit": "equally",
+          "onlyUnassignedContact": true
+        },
+        "parentKey": "3c856591-d2f5-5366-9bc8-19b7f1b74b5b",
+        "next": "4e410120-022f-535f-be73-8685f71a5d83"
+      },
+      {
+        "id": "4e410120-022f-535f-be73-8685f71a5d83",
+        "order": 18,
+        "name": "Create/update opportunity: Replied - Needs Review",
+        "type": "create_opportunity",
+        "attributes": {
+          "pipelineId": "REPLACE_PIPELINE_ID",
+          "pipelineStageId": "REPLACE_STAGE_ID_REPLIED_NEEDS_REVIEW",
+          "opportunityName": "{{contact.first_name}} {{contact.last_name}} - {{contact.address1}}",
+          "status": "open",
+          "allowBackward": false,
+          "allowDuplicate": false
+        },
+        "parentKey": "40e72be3-dd39-5c05-986e-e7511e87c029",
+        "next": "08ce802b-8278-50a6-820f-c61d0a9ca6cd"
+      },
+      {
+        "id": "08ce802b-8278-50a6-820f-c61d0a9ca6cd",
+        "order": 19,
+        "name": "Text the assigned setter",
+        "type": "internal_notification",
+        "attributes": {
+          "type": "sms",
+          "to": "assigned_user",
+          "body": "SMS reply from {{contact.first_name}} ({{contact.address1}}): \"{{message.body}}\" Reply fast."
+        },
+        "parentKey": "4e410120-022f-535f-be73-8685f71a5d83",
+        "next": "8f2ac98d-3a86-53ad-8c0f-7a645d489f8d"
+      },
+      {
+        "id": "8f2ac98d-3a86-53ad-8c0f-7a645d489f8d",
+        "order": 20,
+        "name": "Email the assigned setter",
+        "type": "internal_notification",
+        "attributes": {
+          "type": "email",
+          "to": "assigned_user",
+          "subject": "SMS reply: {{contact.first_name}} - {{contact.address1}}",
+          "body": "{{contact.first_name}} replied: \"{{message.body}}\"<br>Phone: {{contact.phone}}<br>Open the conversation in the inbox and respond."
+        },
+        "parentKey": "08ce802b-8278-50a6-820f-c61d0a9ca6cd",
+        "next": "384adc2d-744a-5eeb-a2ab-5b13d56dcf3e"
+      },
+      {
+        "id": "384adc2d-744a-5eeb-a2ab-5b13d56dcf3e",
+        "order": 21,
+        "name": "Task for setter",
+        "type": "add_task",
+        "attributes": {
+          "assignTo": "assigned_user",
+          "title": "Review reply: {{contact.first_name}} - {{contact.address1}}",
+          "description": "Replied to seller SMS: \"{{message.body}}\"",
+          "dueIn": {
+            "value": 4,
+            "unit": "hours"
+          }
+        },
+        "parentKey": "8f2ac98d-3a86-53ad-8c0f-7a645d489f8d",
+        "next": null
+      }
+    ]
+  }
+}
