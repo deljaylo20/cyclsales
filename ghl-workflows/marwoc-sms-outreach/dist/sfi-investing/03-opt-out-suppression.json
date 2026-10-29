@@ -1,151 +1,25 @@
 {
+  "_id": "9ef31fd4-4161-5628-af82-fc67bef68d7f",
+  "locationId": "REPLACE_LOCATION_ID",
   "name": "MARWOC | 03 Opt-Out + Permanent Suppression",
   "status": "draft",
   "version": 1,
-  "timezone": "contact",
-  "stopOnResponse": false,
+  "dataVersion": 1,
   "allowMultiple": true,
+  "timezone": "account",
   "removeContactFromLastStep": true,
+  "stopOnResponse": false,
   "autoMarkAsRead": false,
-  "triggers": [
-    {
-      "type": "customer_reply",
-      "name": "Customer replied with opt-out language",
-      "active": true,
-      "conditions": [
-        {
-          "field": "message.type",
-          "operator": "==",
-          "value": "SMS"
-        },
-        {
-          "operator": "or",
-          "conditions": [
-            {
-              "field": "message.body",
-              "operator": "exact_match",
-              "value": "stop"
-            },
-            {
-              "field": "message.body",
-              "operator": "exact_match",
-              "value": "stopall"
-            },
-            {
-              "field": "message.body",
-              "operator": "exact_match",
-              "value": "unsubscribe"
-            },
-            {
-              "field": "message.body",
-              "operator": "exact_match",
-              "value": "cancel"
-            },
-            {
-              "field": "message.body",
-              "operator": "exact_match",
-              "value": "end"
-            },
-            {
-              "field": "message.body",
-              "operator": "exact_match",
-              "value": "quit"
-            },
-            {
-              "field": "message.body",
-              "operator": "exact_match",
-              "value": "optout"
-            },
-            {
-              "field": "message.body",
-              "operator": "exact_match",
-              "value": "revoke"
-            },
-            {
-              "field": "message.body",
-              "operator": "exact_match",
-              "value": "stop all"
-            },
-            {
-              "field": "message.body",
-              "operator": "contains_phrase",
-              "value": "stop texting"
-            },
-            {
-              "field": "message.body",
-              "operator": "contains_phrase",
-              "value": "stop messaging"
-            },
-            {
-              "field": "message.body",
-              "operator": "contains_phrase",
-              "value": "stop contacting"
-            },
-            {
-              "field": "message.body",
-              "operator": "contains_phrase",
-              "value": "remove me"
-            },
-            {
-              "field": "message.body",
-              "operator": "contains_phrase",
-              "value": "take me off"
-            },
-            {
-              "field": "message.body",
-              "operator": "contains_phrase",
-              "value": "do not text"
-            },
-            {
-              "field": "message.body",
-              "operator": "contains_phrase",
-              "value": "don't text"
-            },
-            {
-              "field": "message.body",
-              "operator": "contains_phrase",
-              "value": "dont text"
-            },
-            {
-              "field": "message.body",
-              "operator": "contains_phrase",
-              "value": "do not contact"
-            },
-            {
-              "field": "message.body",
-              "operator": "contains_phrase",
-              "value": "don't contact"
-            },
-            {
-              "field": "message.body",
-              "operator": "contains_phrase",
-              "value": "opt out"
-            },
-            {
-              "field": "message.body",
-              "operator": "contains_phrase",
-              "value": "unsubscribe"
-            },
-            {
-              "field": "message.body",
-              "operator": "contains_phrase",
-              "value": "lose my number"
-            },
-            {
-              "field": "message.body",
-              "operator": "contains_phrase",
-              "value": "leave me alone"
-            },
-            {
-              "field": "message.body",
-              "operator": "contains_phrase",
-              "value": "no more texts"
-            }
-          ]
-        }
-      ]
-    }
-  ],
+  "type": "workflow",
+  "parentId": null,
+  "deleted": false,
+  "allowMultipleOpportunity": true,
+  "creationSource": "builder",
+  "originType": "user",
+  "eventStartDate": null,
+  "window": null,
+  "workflowNote": null,
+  "id": "9ef31fd4-4161-5628-af82-fc67bef68d7f",
   "workflowData": {
     "templates": [
       {
@@ -154,12 +28,9 @@
         "name": "DND: all channels",
         "type": "dnd_contact",
         "attributes": {
-          "dnd": true,
-          "channels": [
-            "all"
-          ]
+          "type": "dnd_contact",
+          "dnd_contact": "enable"
         },
-        "parentKey": null,
         "next": "5b1330f7-592e-57d0-abe4-f97ace6a66e8"
       },
       {
@@ -167,12 +38,12 @@
         "order": 1,
         "name": "Add tag: dnc-permanent",
         "type": "add_contact_tag",
+        "parentKey": "7bc03594-259f-5ae6-9fca-a4089250bead",
         "attributes": {
           "tags": [
             "dnc-permanent"
           ]
         },
-        "parentKey": "7bc03594-259f-5ae6-9fca-a4089250bead",
         "next": "49cd643a-71e7-520c-9aad-a4fcdee67ca4"
       },
       {
@@ -180,92 +51,200 @@
         "order": 2,
         "name": "Remove tag: sms-drip-active, sms-drip-start",
         "type": "remove_contact_tag",
+        "parentKey": "5b1330f7-592e-57d0-abe4-f97ace6a66e8",
         "attributes": {
           "tags": [
             "sms-drip-active",
             "sms-drip-start"
-          ]
+          ],
+          "type": "remove_contact_tag"
         },
-        "parentKey": "5b1330f7-592e-57d0-abe4-f97ace6a66e8",
         "next": "319ab07c-dfca-532a-96e4-2d9b43133d83"
       },
       {
         "id": "319ab07c-dfca-532a-96e4-2d9b43133d83",
         "order": 3,
         "name": "Audit note: opt-out",
-        "type": "add_note",
-        "attributes": {
-          "body": "Opted out by SMS reply: \"{{message.body}}\". DND all channels + dnc-permanent applied automatically."
-        },
+        "type": "add_notes",
         "parentKey": "49cd643a-71e7-520c-9aad-a4fcdee67ca4",
+        "attributes": {
+          "html": "Opted out by SMS reply: \"{{message.body}}\". DND all channels + dnc-permanent applied by workflow.",
+          "type": "add_notes"
+        },
         "next": "31908b23-1828-5517-b6a4-16949ec1aa25"
       },
       {
         "id": "31908b23-1828-5517-b6a4-16949ec1aa25",
         "order": 4,
-        "name": "Move opportunity to Suppressed (if one exists)",
-        "type": "create_opportunity",
-        "attributes": {
-          "pipelineId": "REPLACE_PIPELINE_ID",
-          "pipelineStageId": "REPLACE_STAGE_ID_SUPPRESSED",
-          "status": "lost",
-          "allowBackward": true,
-          "allowDuplicate": false,
-          "onlyUpdateExisting": true
-        },
+        "name": "Remove from all other workflows",
+        "type": "remove_from_workflow",
         "parentKey": "319ab07c-dfca-532a-96e4-2d9b43133d83",
+        "attributes": {
+          "type": "remove_from_workflow",
+          "allWorkflows": true,
+          "includeCurrent": false
+        },
         "next": "e2328565-7a12-5aa0-8abe-5f0da9e47fb5"
       },
       {
         "id": "e2328565-7a12-5aa0-8abe-5f0da9e47fb5",
         "order": 5,
-        "name": "Sync DNC to Clark Home Improvement",
-        "type": "webhook",
-        "attributes": {
-          "method": "POST",
-          "url": "REPLACE_CLARK_INBOUND_WEBHOOK_URL",
-          "headers": [],
-          "customData": [
-            {
-              "key": "phone",
-              "value": "{{contact.phone}}"
-            },
-            {
-              "key": "email",
-              "value": "{{contact.email}}"
-            },
-            {
-              "key": "first_name",
-              "value": "{{contact.first_name}}"
-            },
-            {
-              "key": "last_name",
-              "value": "{{contact.last_name}}"
-            },
-            {
-              "key": "reason",
-              "value": "sms_opt_out"
-            },
-            {
-              "key": "source_account",
-              "value": "SFI Investing"
-            }
-          ]
-        },
+        "name": "Has an outreach opportunity?",
+        "type": "if_else",
         "parentKey": "31908b23-1828-5517-b6a4-16949ec1aa25",
-        "next": "d9b9c60a-2ea6-5f15-a96a-dbaab8c056c1"
+        "attributes": {
+          "operator": "and",
+          "segments": [],
+          "if": true,
+          "conditionName": "Has an outreach opportunity?",
+          "branches": [
+            {
+              "id": "886ea385-33a9-5f50-8a39-e80ebb624717",
+              "name": "Yes",
+              "segments": [
+                {
+                  "__segmentId": "b8bca7f2-f5c1-5b6f-ada7-ce3e8dc53dcb",
+                  "operator": "and",
+                  "conditions": [
+                    {
+                      "conditionType": "opportunities",
+                      "conditionSubType": "pipelineId",
+                      "conditionOperator": "==",
+                      "conditionValue": "REPLACE_PIPELINE_ID",
+                      "__customFieldType__": "standard",
+                      "__conditionId": "7c567987-1d44-50db-9d0f-a3669efa19cd",
+                      "ifElseNodeId": "",
+                      "isWait": false
+                    }
+                  ]
+                }
+              ],
+              "operator": "and",
+              "showErrors": false,
+              "branchNameError": "Branch name cannot be empty!"
+            }
+          ],
+          "version": 2
+        },
+        "cat": "conditions",
+        "nodeType": "condition-node",
+        "next": [
+          "886ea385-33a9-5f50-8a39-e80ebb624717",
+          "1a6482ae-b44b-5a8e-89e6-66a8a1b55701"
+        ]
       },
       {
-        "id": "d9b9c60a-2ea6-5f15-a96a-dbaab8c056c1",
-        "order": 6,
-        "name": "Remove from all other workflows",
-        "type": "remove_from_all_workflows",
-        "attributes": {
-          "excludeCurrent": true
-        },
+        "id": "886ea385-33a9-5f50-8a39-e80ebb624717",
+        "parent": "e2328565-7a12-5aa0-8abe-5f0da9e47fb5",
         "parentKey": "e2328565-7a12-5aa0-8abe-5f0da9e47fb5",
-        "next": null
+        "order": 6,
+        "name": "Yes",
+        "type": "if_else",
+        "cat": "conditions",
+        "attributes": {
+          "if": false,
+          "conditionName": "Condition",
+          "operator": "and",
+          "branches": []
+        },
+        "sibling": [
+          "1a6482ae-b44b-5a8e-89e6-66a8a1b55701"
+        ],
+        "comments": [],
+        "nodeType": "branch-yes",
+        "next": "bc3388bd-2cfe-5f58-a058-4c899a5a8e71"
+      },
+      {
+        "id": "bc3388bd-2cfe-5f58-a058-4c899a5a8e71",
+        "order": 7,
+        "name": "Move opportunity to Suppressed (lost)",
+        "type": "create_opportunity",
+        "parent": "886ea385-33a9-5f50-8a39-e80ebb624717",
+        "parentKey": "886ea385-33a9-5f50-8a39-e80ebb624717",
+        "attributes": {
+          "fields": [],
+          "type": "create_opportunity",
+          "pipeline_id": "REPLACE_PIPELINE_ID",
+          "pipeline_stage_id": "REPLACE_STAGE_ID_SUPPRESSED",
+          "opportunity_name": "{{contact.first_name}} {{contact.last_name}} - {{contact.address1}}",
+          "opportunity_status": "lost",
+          "opportunity_source": "Seller SMS Outreach",
+          "monetary_value": ""
+        }
+      },
+      {
+        "id": "1a6482ae-b44b-5a8e-89e6-66a8a1b55701",
+        "parent": "e2328565-7a12-5aa0-8abe-5f0da9e47fb5",
+        "parentKey": "e2328565-7a12-5aa0-8abe-5f0da9e47fb5",
+        "order": 6,
+        "name": "None",
+        "type": "if_else",
+        "cat": "conditions",
+        "attributes": {
+          "else": true
+        },
+        "sibling": [
+          "886ea385-33a9-5f50-8a39-e80ebb624717"
+        ],
+        "nodeType": "branch-no"
       }
     ]
-  }
+  },
+  "scheduledPauseDates": [],
+  "_triggers": [
+    {
+      "id": "4f81342d31895f56a07f",
+      "deleted": false,
+      "active": true,
+      "actions": [
+        {
+          "workflow_id": "9ef31fd4-4161-5628-af82-fc67bef68d7f",
+          "type": "add_to_workflow"
+        }
+      ],
+      "conditions": [
+        {
+          "operator": "==",
+          "field": "message.type",
+          "value": 2,
+          "title": "Reply channel",
+          "type": "select"
+        },
+        {
+          "operator": "string-contains-any-of",
+          "field": "message.body",
+          "value": [
+            "stop",
+            "stopall",
+            "unsubscribe",
+            "remove me",
+            "take me off",
+            "opt out",
+            "optout",
+            "do not text",
+            "don't text",
+            "dont text",
+            "do not contact",
+            "don't contact",
+            "dont contact",
+            "lose my number",
+            "leave me alone",
+            "no more texts",
+            "revoke"
+          ],
+          "title": "Contains phrase",
+          "type": "string",
+          "id": "message-contains-phrase"
+        }
+      ],
+      "type": "customer_reply",
+      "masterType": "highlevel",
+      "workflow_id": "9ef31fd4-4161-5628-af82-fc67bef68d7f",
+      "location_id": "REPLACE_LOCATION_ID",
+      "name": "Customer Replied",
+      "belongs_to": "workflow",
+      "schedule_config": {},
+      "last_conditions_change_at": ""
+    }
+  ]
 }

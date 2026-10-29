@@ -1,723 +1,620 @@
 {
+  "_id": "e76cdfbc-0c26-56a5-aab8-980ed8f15b4c",
+  "locationId": "REPLACE_LOCATION_ID",
   "name": "MARWOC | 02 SMS Reply Router (round robin)",
   "status": "draft",
   "version": 1,
-  "timezone": "contact",
-  "stopOnResponse": false,
+  "dataVersion": 1,
   "allowMultiple": true,
+  "timezone": "account",
   "removeContactFromLastStep": true,
+  "stopOnResponse": false,
   "autoMarkAsRead": false,
-  "triggers": [
-    {
-      "type": "customer_reply",
-      "name": "Customer replied (SMS)",
-      "active": true,
-      "conditions": [
-        {
-          "field": "message.type",
-          "operator": "==",
-          "value": "SMS"
-        }
-      ]
-    }
-  ],
+  "type": "workflow",
+  "parentId": null,
+  "deleted": false,
+  "allowMultipleOpportunity": true,
+  "creationSource": "builder",
+  "originType": "user",
+  "eventStartDate": null,
+  "window": null,
+  "workflowNote": null,
+  "id": "e76cdfbc-0c26-56a5-aab8-980ed8f15b4c",
   "workflowData": {
     "templates": [
       {
         "id": "9ccc03fb-36ae-5829-86cc-30d16ef9d5ed",
         "order": 0,
-        "name": "Came from the drip?",
-        "type": "if_else",
+        "name": "Wait 1 min (let taggers 03/05/06 run first)",
+        "type": "wait",
         "attributes": {
+          "type": "time",
+          "startAfter": {
+            "type": "minutes",
+            "value": 1,
+            "when": "after"
+          },
+          "name": "Wait 1 min (let taggers 03/05/06 run first)",
+          "cat": "",
+          "isHybridAction": true,
+          "hybridActionType": "wait",
+          "convertToMultipath": false,
+          "transitions": []
+        },
+        "next": "38ceaf6e-6105-57dc-a251-27177828dcb2"
+      },
+      {
+        "id": "38ceaf6e-6105-57dc-a251-27177828dcb2",
+        "order": 1,
+        "name": "Route the reply",
+        "type": "if_else",
+        "parentKey": "9ccc03fb-36ae-5829-86cc-30d16ef9d5ed",
+        "attributes": {
+          "operator": "and",
+          "segments": [],
+          "if": true,
+          "conditionName": "Route the reply",
           "branches": [
             {
-              "id": "1311acfe-fa79-507a-9764-18242cd6a6f2",
-              "name": "Yes",
-              "isNoneBranch": false,
+              "id": "34dbfe55-9afd-53f5-8165-5a420242bb2f",
+              "name": "Suppressed (opt-out / not interested)",
               "segments": [
                 {
-                  "operator": "or",
+                  "__segmentId": "93e2e164-1fdc-5faf-abc3-8e320d1b17df",
+                  "operator": "and",
                   "conditions": [
                     {
-                      "field": "contact.tags",
-                      "operator": "contains",
-                      "value": "sms-drip-active"
+                      "conditionType": "contact_detail",
+                      "conditionSubType": "tags",
+                      "conditionOperator": "index-of-true",
+                      "conditionValue": [
+                        "dnc-permanent",
+                        "sms-not-interested"
+                      ],
+                      "__customFieldType__": "standard",
+                      "__conditionId": "b21c5868-0b75-5c81-8ab7-8892495e9320",
+                      "ifElseNodeId": "",
+                      "isWait": false
                     },
                     {
-                      "field": "contact.tags",
-                      "operator": "contains",
-                      "value": "sms-drip-complete-no-reply"
+                      "conditionType": "contact_detail",
+                      "conditionSubType": "tags",
+                      "conditionOperator": "index-of-true",
+                      "conditionValue": [
+                        "sms-drip-active",
+                        "sms-drip-complete-no-reply"
+                      ],
+                      "__customFieldType__": "standard",
+                      "__conditionId": "f114d50e-94f0-56fb-903c-9451d1c54ea6",
+                      "ifElseNodeId": "",
+                      "isWait": false
                     }
                   ]
                 }
               ],
-              "next": "a8953eda-7d8f-5f83-bfe9-162d10b21b40"
+              "operator": "and",
+              "showErrors": false,
+              "branchNameError": "Branch name cannot be empty!"
             },
             {
-              "id": "2805a214-bbe5-533c-b780-d67603b94666",
-              "name": "None (not an outreach lead)",
-              "isNoneBranch": true,
-              "next": null
+              "id": "d9214cbc-a10c-5149-9840-6dbb6c243381",
+              "name": "Interested",
+              "segments": [
+                {
+                  "__segmentId": "08b1e39e-6129-50cc-a51c-ccdf28b3da7a",
+                  "operator": "and",
+                  "conditions": [
+                    {
+                      "conditionType": "contact_detail",
+                      "conditionSubType": "tags",
+                      "conditionOperator": "index-of-true",
+                      "conditionValue": [
+                        "sms-interested"
+                      ],
+                      "__customFieldType__": "standard",
+                      "__conditionId": "60a8b5cf-6bf9-5c9a-aef1-bc5b252d982b",
+                      "ifElseNodeId": "",
+                      "isWait": false
+                    },
+                    {
+                      "conditionType": "contact_detail",
+                      "conditionSubType": "tags",
+                      "conditionOperator": "index-of-true",
+                      "conditionValue": [
+                        "sms-drip-active",
+                        "sms-drip-complete-no-reply"
+                      ],
+                      "__customFieldType__": "standard",
+                      "__conditionId": "44f3c686-6cb1-553e-97d4-29f0a3150b7c",
+                      "ifElseNodeId": "",
+                      "isWait": false
+                    }
+                  ]
+                }
+              ],
+              "operator": "and",
+              "showErrors": false,
+              "branchNameError": "Branch name cannot be empty!"
+            },
+            {
+              "id": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
+              "name": "Other reply from outreach",
+              "segments": [
+                {
+                  "__segmentId": "a4e0c02b-5a48-5d22-b4ec-7af09b3f3443",
+                  "operator": "and",
+                  "conditions": [
+                    {
+                      "conditionType": "contact_detail",
+                      "conditionSubType": "tags",
+                      "conditionOperator": "index-of-true",
+                      "conditionValue": [
+                        "sms-drip-active",
+                        "sms-drip-complete-no-reply"
+                      ],
+                      "__customFieldType__": "standard",
+                      "__conditionId": "09c2f52f-9b0b-528e-b4c2-5f6909796a5a",
+                      "ifElseNodeId": "",
+                      "isWait": false
+                    }
+                  ]
+                }
+              ],
+              "operator": "and",
+              "showErrors": false,
+              "branchNameError": "Branch name cannot be empty!"
             }
-          ]
+          ],
+          "version": 2
         },
-        "parentKey": null,
+        "cat": "conditions",
+        "nodeType": "condition-node",
         "next": [
-          "1311acfe-fa79-507a-9764-18242cd6a6f2",
-          "2805a214-bbe5-533c-b780-d67603b94666"
+          "34dbfe55-9afd-53f5-8165-5a420242bb2f",
+          "d9214cbc-a10c-5149-9840-6dbb6c243381",
+          "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
+          "40bf099a-ad2c-54c5-af6d-8377c2c0d7be"
         ]
       },
       {
-        "id": "a8953eda-7d8f-5f83-bfe9-162d10b21b40",
-        "order": 1,
-        "name": "Remove tag: sms-drip-active",
-        "type": "remove_contact_tag",
+        "id": "34dbfe55-9afd-53f5-8165-5a420242bb2f",
+        "parent": "38ceaf6e-6105-57dc-a251-27177828dcb2",
+        "parentKey": "38ceaf6e-6105-57dc-a251-27177828dcb2",
+        "order": 2,
+        "name": "Suppressed (opt-out / not interested)",
+        "type": "if_else",
+        "cat": "conditions",
         "attributes": {
-          "tags": [
-            "sms-drip-active"
-          ]
+          "if": false,
+          "conditionName": "Condition",
+          "operator": "and",
+          "branches": []
         },
-        "parentKey": "9ccc03fb-36ae-5829-86cc-30d16ef9d5ed",
-        "next": "79ba08bc-9781-5766-85b5-ac96617a3596",
-        "parent": "1311acfe-fa79-507a-9764-18242cd6a6f2"
+        "sibling": [
+          "d9214cbc-a10c-5149-9840-6dbb6c243381",
+          "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
+          "40bf099a-ad2c-54c5-af6d-8377c2c0d7be"
+        ],
+        "comments": [],
+        "nodeType": "branch-yes",
+        "next": "4a766ac8-fbe9-5f9a-9519-ec843c9a3c43"
       },
       {
-        "id": "79ba08bc-9781-5766-85b5-ac96617a3596",
-        "order": 2,
+        "id": "4a766ac8-fbe9-5f9a-9519-ec843c9a3c43",
+        "order": 3,
+        "name": "Remove tag: sms-drip-active, sms-drip-complete-no-reply",
+        "type": "remove_contact_tag",
+        "parent": "34dbfe55-9afd-53f5-8165-5a420242bb2f",
+        "parentKey": "34dbfe55-9afd-53f5-8165-5a420242bb2f",
+        "attributes": {
+          "tags": [
+            "sms-drip-active",
+            "sms-drip-complete-no-reply"
+          ],
+          "type": "remove_contact_tag"
+        },
+        "next": "97cccbaf-304c-5b1c-93d9-5dc05aa515cd"
+      },
+      {
+        "id": "97cccbaf-304c-5b1c-93d9-5dc05aa515cd",
+        "order": 4,
         "name": "Add tag: sms-replied",
         "type": "add_contact_tag",
+        "parent": "34dbfe55-9afd-53f5-8165-5a420242bb2f",
+        "parentKey": "4a766ac8-fbe9-5f9a-9519-ec843c9a3c43",
+        "attributes": {
+          "tags": [
+            "sms-replied"
+          ]
+        }
+      },
+      {
+        "id": "d9214cbc-a10c-5149-9840-6dbb6c243381",
+        "parent": "38ceaf6e-6105-57dc-a251-27177828dcb2",
+        "parentKey": "38ceaf6e-6105-57dc-a251-27177828dcb2",
+        "order": 2,
+        "name": "Interested",
+        "type": "if_else",
+        "cat": "conditions",
+        "attributes": {
+          "if": false,
+          "conditionName": "Condition",
+          "operator": "and",
+          "branches": []
+        },
+        "sibling": [
+          "34dbfe55-9afd-53f5-8165-5a420242bb2f",
+          "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
+          "40bf099a-ad2c-54c5-af6d-8377c2c0d7be"
+        ],
+        "comments": [],
+        "nodeType": "branch-yes",
+        "next": "c96ac40a-31a4-5248-828d-07c501519c58"
+      },
+      {
+        "id": "c96ac40a-31a4-5248-828d-07c501519c58",
+        "order": 3,
+        "name": "Remove tag: sms-drip-active, sms-drip-complete-no-reply",
+        "type": "remove_contact_tag",
+        "parent": "d9214cbc-a10c-5149-9840-6dbb6c243381",
+        "parentKey": "d9214cbc-a10c-5149-9840-6dbb6c243381",
+        "attributes": {
+          "tags": [
+            "sms-drip-active",
+            "sms-drip-complete-no-reply"
+          ],
+          "type": "remove_contact_tag"
+        },
+        "next": "6b8b1216-3c08-5dd2-b5ec-1117d50fde0e"
+      },
+      {
+        "id": "6b8b1216-3c08-5dd2-b5ec-1117d50fde0e",
+        "order": 4,
+        "name": "Add tag: sms-replied",
+        "type": "add_contact_tag",
+        "parent": "d9214cbc-a10c-5149-9840-6dbb6c243381",
+        "parentKey": "c96ac40a-31a4-5248-828d-07c501519c58",
         "attributes": {
           "tags": [
             "sms-replied"
           ]
         },
-        "parentKey": "a8953eda-7d8f-5f83-bfe9-162d10b21b40",
-        "next": "8b78d00b-f675-5e7c-be64-de730be36f86"
+        "next": "459cdf09-b98e-544e-ac56-c8332c166c73"
       },
       {
-        "id": "8b78d00b-f675-5e7c-be64-de730be36f86",
-        "order": 3,
-        "name": "Classify reply",
-        "type": "if_else",
-        "attributes": {
-          "branches": [
-            {
-              "id": "18a56eb5-6fee-5538-8da3-41d34e90168a",
-              "name": "Opt-out language (handled by 03)",
-              "isNoneBranch": false,
-              "segments": [
-                {
-                  "operator": "or",
-                  "conditions": [
-                    {
-                      "field": "message.body",
-                      "operator": "exact_match",
-                      "value": "stop"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "exact_match",
-                      "value": "stopall"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "exact_match",
-                      "value": "unsubscribe"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "exact_match",
-                      "value": "cancel"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "exact_match",
-                      "value": "end"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "exact_match",
-                      "value": "quit"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "exact_match",
-                      "value": "optout"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "exact_match",
-                      "value": "revoke"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "exact_match",
-                      "value": "stop all"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "stop texting"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "stop messaging"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "stop contacting"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "remove me"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "take me off"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "do not text"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "don't text"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "dont text"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "do not contact"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "don't contact"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "opt out"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "unsubscribe"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "lose my number"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "leave me alone"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "no more texts"
-                    }
-                  ]
-                }
-              ],
-              "next": null
-            },
-            {
-              "id": "ef301c90-3c6b-589a-a967-0aeb23fe24de",
-              "name": "Wrong number",
-              "isNoneBranch": false,
-              "segments": [
-                {
-                  "operator": "or",
-                  "conditions": [
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "wrong number"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "wrong person"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "don't own"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "dont own"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "do not own"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "never owned"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "not my house"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "not my property"
-                    }
-                  ]
-                }
-              ],
-              "next": "700314ee-926b-5edf-9a66-8c451a150b15"
-            },
-            {
-              "id": "a2e24e36-f2fd-5179-9dae-5c01161644ce",
-              "name": "Not interested",
-              "isNoneBranch": false,
-              "segments": [
-                {
-                  "operator": "or",
-                  "conditions": [
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "not interested"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "no thanks"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "no thank you"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "not selling"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "not for sale"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "already sold"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "sold it"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "not looking to sell"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "never selling"
-                    }
-                  ]
-                }
-              ],
-              "next": "6b015c50-44c6-5fad-8727-8b78a82441f7"
-            },
-            {
-              "id": "0b23d865-88fd-5e31-9e4b-30cb10c03679",
-              "name": "Interested",
-              "isNoneBranch": false,
-              "segments": [
-                {
-                  "operator": "or",
-                  "conditions": [
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "yes"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "yeah"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "yep"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "sure"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "maybe"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "how much"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "what would you"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "make an offer"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "make me an offer"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "your offer"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "price"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "depends"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "call me"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "possibly"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "thinking about it"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "open to"
-                    },
-                    {
-                      "field": "message.body",
-                      "operator": "contains_phrase",
-                      "value": "what's your number"
-                    }
-                  ]
-                }
-              ],
-              "next": "8ae20f7d-ab1e-536c-a900-bd2a2a57e903"
-            },
-            {
-              "id": "f9d497d7-2a45-53e7-b4fa-86c3d2a4346f",
-              "name": "None (needs a human)",
-              "isNoneBranch": true,
-              "next": "3c856591-d2f5-5366-9bc8-19b7f1b74b5b"
-            }
-          ]
-        },
-        "parentKey": "79ba08bc-9781-5766-85b5-ac96617a3596",
-        "next": [
-          "18a56eb5-6fee-5538-8da3-41d34e90168a",
-          "ef301c90-3c6b-589a-a967-0aeb23fe24de",
-          "a2e24e36-f2fd-5179-9dae-5c01161644ce",
-          "0b23d865-88fd-5e31-9e4b-30cb10c03679",
-          "f9d497d7-2a45-53e7-b4fa-86c3d2a4346f"
-        ]
-      },
-      {
-        "id": "700314ee-926b-5edf-9a66-8c451a150b15",
-        "order": 4,
-        "name": "Add tag: sms-wrong-number",
-        "type": "add_contact_tag",
-        "attributes": {
-          "tags": [
-            "sms-wrong-number"
-          ]
-        },
-        "parentKey": "8b78d00b-f675-5e7c-be64-de730be36f86",
-        "next": "0db7df26-d13f-54d4-92a0-0170fe01a51c",
-        "parent": "ef301c90-3c6b-589a-a967-0aeb23fe24de"
-      },
-      {
-        "id": "0db7df26-d13f-54d4-92a0-0170fe01a51c",
+        "id": "459cdf09-b98e-544e-ac56-c8332c166c73",
         "order": 5,
-        "name": "DND: SMS",
-        "type": "dnd_contact",
-        "attributes": {
-          "dnd": true,
-          "channels": [
-            "sms"
-          ]
-        },
-        "parentKey": "700314ee-926b-5edf-9a66-8c451a150b15",
-        "next": "869e42db-7ee2-54a5-b898-f55cd1216e6f"
-      },
-      {
-        "id": "869e42db-7ee2-54a5-b898-f55cd1216e6f",
-        "order": 6,
-        "name": "Note: wrong number",
-        "type": "add_note",
-        "attributes": {
-          "body": "Wrong number per SMS reply: \"{{message.body}}\". SMS suppressed."
-        },
-        "parentKey": "0db7df26-d13f-54d4-92a0-0170fe01a51c",
-        "next": null
-      },
-      {
-        "id": "6b015c50-44c6-5fad-8727-8b78a82441f7",
-        "order": 7,
-        "name": "Add tag: sms-not-interested",
-        "type": "add_contact_tag",
-        "attributes": {
-          "tags": [
-            "sms-not-interested"
-          ]
-        },
-        "parentKey": "8b78d00b-f675-5e7c-be64-de730be36f86",
-        "next": "e66a27ff-80c3-597e-8ebd-ff7f8fa3b167",
-        "parent": "a2e24e36-f2fd-5179-9dae-5c01161644ce"
-      },
-      {
-        "id": "e66a27ff-80c3-597e-8ebd-ff7f8fa3b167",
-        "order": 8,
-        "name": "DND: SMS",
-        "type": "dnd_contact",
-        "attributes": {
-          "dnd": true,
-          "channels": [
-            "sms"
-          ]
-        },
-        "parentKey": "6b015c50-44c6-5fad-8727-8b78a82441f7",
-        "next": "e701ac77-54c7-510b-8526-6dd0842436b7"
-      },
-      {
-        "id": "e701ac77-54c7-510b-8526-6dd0842436b7",
-        "order": 9,
-        "name": "Note: not interested",
-        "type": "add_note",
-        "attributes": {
-          "body": "Not interested per SMS reply: \"{{message.body}}\". SMS suppressed."
-        },
-        "parentKey": "e66a27ff-80c3-597e-8ebd-ff7f8fa3b167",
-        "next": null
-      },
-      {
-        "id": "8ae20f7d-ab1e-536c-a900-bd2a2a57e903",
-        "order": 10,
-        "name": "Add tag: sms-interested",
-        "type": "add_contact_tag",
-        "attributes": {
-          "tags": [
-            "sms-interested"
-          ]
-        },
-        "parentKey": "8b78d00b-f675-5e7c-be64-de730be36f86",
-        "next": "59a8438c-3500-5e8e-9df8-a80db8ace01c",
-        "parent": "0b23d865-88fd-5e31-9e4b-30cb10c03679"
-      },
-      {
-        "id": "59a8438c-3500-5e8e-9df8-a80db8ace01c",
-        "order": 11,
         "name": "Round robin to setters",
         "type": "assign_user",
+        "parent": "d9214cbc-a10c-5149-9840-6dbb6c243381",
+        "parentKey": "6b8b1216-3c08-5dd2-b5ec-1117d50fde0e",
         "attributes": {
-          "userIds": [
+          "only_unassigned_contact": true,
+          "total_index": 2,
+          "traffic_split": "equally",
+          "traffic_weightage": {
+            "REPLACE_SETTER_USER_ID_1": 1,
+            "REPLACE_SETTER_USER_ID_2": 1
+          },
+          "traffic_index": [
+            {
+              "id": "REPLACE_SETTER_USER_ID_1",
+              "indexes": [
+                1
+              ]
+            },
+            {
+              "id": "REPLACE_SETTER_USER_ID_2",
+              "indexes": [
+                2
+              ]
+            }
+          ],
+          "user_list": [
             "REPLACE_SETTER_USER_ID_1",
             "REPLACE_SETTER_USER_ID_2"
           ],
-          "trafficSplit": "equally",
-          "onlyUnassignedContact": true
+          "type": "assign_user"
         },
-        "parentKey": "8ae20f7d-ab1e-536c-a900-bd2a2a57e903",
-        "next": "d4459310-332d-5d41-ac87-4e3f645d4181"
+        "next": "c64f3fd0-ef4d-5d3a-9a75-654572a06134"
       },
       {
-        "id": "d4459310-332d-5d41-ac87-4e3f645d4181",
-        "order": 12,
+        "id": "c64f3fd0-ef4d-5d3a-9a75-654572a06134",
+        "order": 6,
         "name": "Create/update opportunity: Replied - Interested",
         "type": "create_opportunity",
+        "parent": "d9214cbc-a10c-5149-9840-6dbb6c243381",
+        "parentKey": "459cdf09-b98e-544e-ac56-c8332c166c73",
         "attributes": {
-          "pipelineId": "REPLACE_PIPELINE_ID",
-          "pipelineStageId": "REPLACE_STAGE_ID_REPLIED_INTERESTED",
-          "opportunityName": "{{contact.first_name}} {{contact.last_name}} - {{contact.address1}}",
-          "status": "open",
-          "allowBackward": false,
-          "allowDuplicate": false
+          "fields": [],
+          "type": "create_opportunity",
+          "pipeline_id": "REPLACE_PIPELINE_ID",
+          "pipeline_stage_id": "REPLACE_STAGE_ID_REPLIED_INTERESTED",
+          "opportunity_name": "{{contact.first_name}} {{contact.last_name}} - {{contact.address1}}",
+          "opportunity_status": "open",
+          "opportunity_source": "Seller SMS Outreach",
+          "monetary_value": ""
         },
-        "parentKey": "59a8438c-3500-5e8e-9df8-a80db8ace01c",
-        "next": "4ea33b05-1a6f-54cc-8922-445e37fd2684"
+        "next": "4f47e96c-fc57-5ec0-a1e5-93b9616be1b9"
       },
       {
-        "id": "4ea33b05-1a6f-54cc-8922-445e37fd2684",
-        "order": 13,
+        "id": "4f47e96c-fc57-5ec0-a1e5-93b9616be1b9",
+        "order": 7,
         "name": "Text the assigned setter",
         "type": "internal_notification",
+        "parent": "d9214cbc-a10c-5149-9840-6dbb6c243381",
+        "parentKey": "c64f3fd0-ef4d-5d3a-9a75-654572a06134",
         "attributes": {
           "type": "sms",
-          "to": "assigned_user",
-          "body": "HOT - SMS reply from {{contact.first_name}} ({{contact.address1}}): \"{{message.body}}\" Reply fast."
-        },
-        "parentKey": "d4459310-332d-5d41-ac87-4e3f645d4181",
-        "next": "161103d9-ed6f-59a1-90d6-b2cb48a05b72"
-      },
-      {
-        "id": "161103d9-ed6f-59a1-90d6-b2cb48a05b72",
-        "order": 14,
-        "name": "Email the assigned setter",
-        "type": "internal_notification",
-        "attributes": {
-          "type": "email",
-          "to": "assigned_user",
-          "subject": "HOT SMS reply: {{contact.first_name}} - {{contact.address1}}",
-          "body": "{{contact.first_name}} replied: \"{{message.body}}\"<br>Phone: {{contact.phone}}<br>Open the conversation in the inbox and respond."
-        },
-        "parentKey": "4ea33b05-1a6f-54cc-8922-445e37fd2684",
-        "next": "c6aeacf0-a868-5290-b1d3-bbdde04a5e60"
-      },
-      {
-        "id": "c6aeacf0-a868-5290-b1d3-bbdde04a5e60",
-        "order": 15,
-        "name": "Task for setter",
-        "type": "add_task",
-        "attributes": {
-          "assignTo": "assigned_user",
-          "title": "Call now: {{contact.first_name}} - {{contact.address1}}",
-          "description": "Replied to seller SMS: \"{{message.body}}\"",
-          "dueIn": {
-            "value": 1,
-            "unit": "hours"
+          "sms": {
+            "userType": "assign",
+            "body": "HOT - SMS reply from {{contact.first_name}} about {{contact.address1}}. Open the conversation and reply fast.",
+            "attachments": []
           }
         },
-        "parentKey": "161103d9-ed6f-59a1-90d6-b2cb48a05b72",
-        "next": null
+        "next": "fc9cf759-400e-519b-b4a2-501a7bc87b9e"
       },
       {
-        "id": "3c856591-d2f5-5366-9bc8-19b7f1b74b5b",
-        "order": 16,
+        "id": "fc9cf759-400e-519b-b4a2-501a7bc87b9e",
+        "order": 8,
+        "name": "Push notification to assigned setter",
+        "type": "internal_notification",
+        "parent": "d9214cbc-a10c-5149-9840-6dbb6c243381",
+        "parentKey": "4f47e96c-fc57-5ec0-a1e5-93b9616be1b9",
+        "attributes": {
+          "type": "notification",
+          "notification": {
+            "type": "send_notification",
+            "redirectPage": "conversation",
+            "body": "{{contact.first_name}} replied to the seller SMS about {{contact.address1}}.",
+            "title": "HOT - Seller replied: {{contact.first_name}}",
+            "userType": "assign"
+          }
+        },
+        "next": "1ffc2b11-e139-59bb-bee4-daac95382f14"
+      },
+      {
+        "id": "1ffc2b11-e139-59bb-bee4-daac95382f14",
+        "order": 9,
+        "name": "Task for setter",
+        "type": "task-notification",
+        "parent": "d9214cbc-a10c-5149-9840-6dbb6c243381",
+        "parentKey": "fc9cf759-400e-519b-b4a2-501a7bc87b9e",
+        "attributes": {
+          "title": "Call now: {{contact.first_name}} - {{contact.address1}}",
+          "body": "Replied to seller SMS outreach. Read the conversation, then call or reply.",
+          "assignedTo": "contact.assigned_user",
+          "dueDate": "1",
+          "type": "task_notification",
+          "__customInputs__": {}
+        },
+        "workflowsActionType": "INTERNAL"
+      },
+      {
+        "id": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
+        "parent": "38ceaf6e-6105-57dc-a251-27177828dcb2",
+        "parentKey": "38ceaf6e-6105-57dc-a251-27177828dcb2",
+        "order": 2,
+        "name": "Other reply from outreach",
+        "type": "if_else",
+        "cat": "conditions",
+        "attributes": {
+          "if": false,
+          "conditionName": "Condition",
+          "operator": "and",
+          "branches": []
+        },
+        "sibling": [
+          "34dbfe55-9afd-53f5-8165-5a420242bb2f",
+          "d9214cbc-a10c-5149-9840-6dbb6c243381",
+          "40bf099a-ad2c-54c5-af6d-8377c2c0d7be"
+        ],
+        "comments": [],
+        "nodeType": "branch-yes",
+        "next": "efdd153a-8b1c-55f4-a36f-526434ac6fea"
+      },
+      {
+        "id": "efdd153a-8b1c-55f4-a36f-526434ac6fea",
+        "order": 3,
         "name": "Add tag: sms-reply-needs-review",
         "type": "add_contact_tag",
+        "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
+        "parentKey": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
         "attributes": {
           "tags": [
             "sms-reply-needs-review"
           ]
         },
-        "parentKey": "8b78d00b-f675-5e7c-be64-de730be36f86",
-        "next": "40e72be3-dd39-5c05-986e-e7511e87c029",
-        "parent": "f9d497d7-2a45-53e7-b4fa-86c3d2a4346f"
+        "next": "80a1988b-8955-5a6f-a2e9-27ba95228378"
       },
       {
-        "id": "40e72be3-dd39-5c05-986e-e7511e87c029",
-        "order": 17,
+        "id": "80a1988b-8955-5a6f-a2e9-27ba95228378",
+        "order": 4,
+        "name": "Remove tag: sms-drip-active, sms-drip-complete-no-reply",
+        "type": "remove_contact_tag",
+        "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
+        "parentKey": "efdd153a-8b1c-55f4-a36f-526434ac6fea",
+        "attributes": {
+          "tags": [
+            "sms-drip-active",
+            "sms-drip-complete-no-reply"
+          ],
+          "type": "remove_contact_tag"
+        },
+        "next": "245e9324-7d29-54f5-8561-1e85c2d2dcef"
+      },
+      {
+        "id": "245e9324-7d29-54f5-8561-1e85c2d2dcef",
+        "order": 5,
+        "name": "Add tag: sms-replied",
+        "type": "add_contact_tag",
+        "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
+        "parentKey": "80a1988b-8955-5a6f-a2e9-27ba95228378",
+        "attributes": {
+          "tags": [
+            "sms-replied"
+          ]
+        },
+        "next": "187b8916-95d0-5834-aebc-cac2a738b1fe"
+      },
+      {
+        "id": "187b8916-95d0-5834-aebc-cac2a738b1fe",
+        "order": 6,
         "name": "Round robin to setters",
         "type": "assign_user",
+        "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
+        "parentKey": "245e9324-7d29-54f5-8561-1e85c2d2dcef",
         "attributes": {
-          "userIds": [
+          "only_unassigned_contact": true,
+          "total_index": 2,
+          "traffic_split": "equally",
+          "traffic_weightage": {
+            "REPLACE_SETTER_USER_ID_1": 1,
+            "REPLACE_SETTER_USER_ID_2": 1
+          },
+          "traffic_index": [
+            {
+              "id": "REPLACE_SETTER_USER_ID_1",
+              "indexes": [
+                1
+              ]
+            },
+            {
+              "id": "REPLACE_SETTER_USER_ID_2",
+              "indexes": [
+                2
+              ]
+            }
+          ],
+          "user_list": [
             "REPLACE_SETTER_USER_ID_1",
             "REPLACE_SETTER_USER_ID_2"
           ],
-          "trafficSplit": "equally",
-          "onlyUnassignedContact": true
+          "type": "assign_user"
         },
-        "parentKey": "3c856591-d2f5-5366-9bc8-19b7f1b74b5b",
-        "next": "4e410120-022f-535f-be73-8685f71a5d83"
+        "next": "863a9cd9-6579-5b2b-95d7-ba026f41891d"
       },
       {
-        "id": "4e410120-022f-535f-be73-8685f71a5d83",
-        "order": 18,
+        "id": "863a9cd9-6579-5b2b-95d7-ba026f41891d",
+        "order": 7,
         "name": "Create/update opportunity: Replied - Needs Review",
         "type": "create_opportunity",
+        "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
+        "parentKey": "187b8916-95d0-5834-aebc-cac2a738b1fe",
         "attributes": {
-          "pipelineId": "REPLACE_PIPELINE_ID",
-          "pipelineStageId": "REPLACE_STAGE_ID_REPLIED_NEEDS_REVIEW",
-          "opportunityName": "{{contact.first_name}} {{contact.last_name}} - {{contact.address1}}",
-          "status": "open",
-          "allowBackward": false,
-          "allowDuplicate": false
+          "fields": [],
+          "type": "create_opportunity",
+          "pipeline_id": "REPLACE_PIPELINE_ID",
+          "pipeline_stage_id": "REPLACE_STAGE_ID_REPLIED_NEEDS_REVIEW",
+          "opportunity_name": "{{contact.first_name}} {{contact.last_name}} - {{contact.address1}}",
+          "opportunity_status": "open",
+          "opportunity_source": "Seller SMS Outreach",
+          "monetary_value": ""
         },
-        "parentKey": "40e72be3-dd39-5c05-986e-e7511e87c029",
-        "next": "08ce802b-8278-50a6-820f-c61d0a9ca6cd"
+        "next": "d7699747-ce69-5dcb-bab3-d0f9e00972f9"
       },
       {
-        "id": "08ce802b-8278-50a6-820f-c61d0a9ca6cd",
-        "order": 19,
+        "id": "d7699747-ce69-5dcb-bab3-d0f9e00972f9",
+        "order": 8,
         "name": "Text the assigned setter",
         "type": "internal_notification",
+        "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
+        "parentKey": "863a9cd9-6579-5b2b-95d7-ba026f41891d",
         "attributes": {
           "type": "sms",
-          "to": "assigned_user",
-          "body": "SMS reply from {{contact.first_name}} ({{contact.address1}}): \"{{message.body}}\" Reply fast."
-        },
-        "parentKey": "4e410120-022f-535f-be73-8685f71a5d83",
-        "next": "8f2ac98d-3a86-53ad-8c0f-7a645d489f8d"
-      },
-      {
-        "id": "8f2ac98d-3a86-53ad-8c0f-7a645d489f8d",
-        "order": 20,
-        "name": "Email the assigned setter",
-        "type": "internal_notification",
-        "attributes": {
-          "type": "email",
-          "to": "assigned_user",
-          "subject": "SMS reply: {{contact.first_name}} - {{contact.address1}}",
-          "body": "{{contact.first_name}} replied: \"{{message.body}}\"<br>Phone: {{contact.phone}}<br>Open the conversation in the inbox and respond."
-        },
-        "parentKey": "08ce802b-8278-50a6-820f-c61d0a9ca6cd",
-        "next": "384adc2d-744a-5eeb-a2ab-5b13d56dcf3e"
-      },
-      {
-        "id": "384adc2d-744a-5eeb-a2ab-5b13d56dcf3e",
-        "order": 21,
-        "name": "Task for setter",
-        "type": "add_task",
-        "attributes": {
-          "assignTo": "assigned_user",
-          "title": "Review reply: {{contact.first_name}} - {{contact.address1}}",
-          "description": "Replied to seller SMS: \"{{message.body}}\"",
-          "dueIn": {
-            "value": 4,
-            "unit": "hours"
+          "sms": {
+            "userType": "assign",
+            "body": "SMS reply from {{contact.first_name}} about {{contact.address1}}. Open the conversation and reply fast.",
+            "attachments": []
           }
         },
-        "parentKey": "8f2ac98d-3a86-53ad-8c0f-7a645d489f8d",
-        "next": null
+        "next": "5d1a7f5b-1496-54b9-95bb-caba511bb8aa"
+      },
+      {
+        "id": "5d1a7f5b-1496-54b9-95bb-caba511bb8aa",
+        "order": 9,
+        "name": "Push notification to assigned setter",
+        "type": "internal_notification",
+        "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
+        "parentKey": "d7699747-ce69-5dcb-bab3-d0f9e00972f9",
+        "attributes": {
+          "type": "notification",
+          "notification": {
+            "type": "send_notification",
+            "redirectPage": "conversation",
+            "body": "{{contact.first_name}} replied to the seller SMS about {{contact.address1}}.",
+            "title": "Seller replied: {{contact.first_name}}",
+            "userType": "assign"
+          }
+        },
+        "next": "88761058-a80e-5b6d-81b4-537d09a2fcf7"
+      },
+      {
+        "id": "88761058-a80e-5b6d-81b4-537d09a2fcf7",
+        "order": 10,
+        "name": "Task for setter",
+        "type": "task-notification",
+        "parent": "a5918e8d-9ca7-5bcb-9ad8-612370b86a37",
+        "parentKey": "5d1a7f5b-1496-54b9-95bb-caba511bb8aa",
+        "attributes": {
+          "title": "Review reply: {{contact.first_name}} - {{contact.address1}}",
+          "body": "Replied to seller SMS outreach. Read the conversation, then call or reply.",
+          "assignedTo": "contact.assigned_user",
+          "dueDate": "1",
+          "type": "task_notification",
+          "__customInputs__": {}
+        },
+        "workflowsActionType": "INTERNAL"
+      },
+      {
+        "id": "40bf099a-ad2c-54c5-af6d-8377c2c0d7be",
+        "parent": "38ceaf6e-6105-57dc-a251-27177828dcb2",
+        "parentKey": "38ceaf6e-6105-57dc-a251-27177828dcb2",
+        "order": 2,
+        "name": "None",
+        "type": "if_else",
+        "cat": "conditions",
+        "attributes": {
+          "else": true
+        },
+        "sibling": [
+          "34dbfe55-9afd-53f5-8165-5a420242bb2f",
+          "d9214cbc-a10c-5149-9840-6dbb6c243381",
+          "a5918e8d-9ca7-5bcb-9ad8-612370b86a37"
+        ],
+        "nodeType": "branch-no"
       }
     ]
-  }
+  },
+  "scheduledPauseDates": [],
+  "_triggers": [
+    {
+      "id": "53c33fc3d346505d8522",
+      "deleted": false,
+      "active": true,
+      "actions": [
+        {
+          "workflow_id": "e76cdfbc-0c26-56a5-aab8-980ed8f15b4c",
+          "type": "add_to_workflow"
+        }
+      ],
+      "conditions": [
+        {
+          "operator": "==",
+          "field": "message.type",
+          "value": 2,
+          "title": "Reply channel",
+          "type": "select"
+        }
+      ],
+      "type": "customer_reply",
+      "masterType": "highlevel",
+      "workflow_id": "e76cdfbc-0c26-56a5-aab8-980ed8f15b4c",
+      "location_id": "REPLACE_LOCATION_ID",
+      "name": "Customer Replied",
+      "belongs_to": "workflow",
+      "schedule_config": {},
+      "last_conditions_change_at": ""
+    }
+  ]
 }

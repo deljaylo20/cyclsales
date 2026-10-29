@@ -86,13 +86,13 @@ HELP_REPLY = (
     f"Questions? Call {PHONE}. Msg & data rates may apply. Reply STOP to opt out."
 )
 
-# Keyword lists for reply routing. GHL phrase matching is case-insensitive.
-# Order matters: opt-out is checked first, then hard no, then positive.
-OPT_OUT_EXACT = ["stop", "stopall", "unsubscribe", "cancel", "end", "quit", "optout", "revoke", "stop all"]
+# Keyword lists for the customer_reply triggers ("Contains phrase", any of).
+# Matching is substring-based, so single words that hide inside normal words
+# (END, QUIT, CANCEL) are left to GHL's built-in carrier keyword handling.
 OPT_OUT_PHRASES = [
-    "stop texting", "stop messaging", "stop contacting", "remove me", "take me off",
-    "do not text", "don't text", "dont text", "do not contact", "don't contact",
-    "opt out", "unsubscribe", "lose my number", "leave me alone", "no more texts",
+    "stop", "stopall", "unsubscribe", "remove me", "take me off", "opt out", "optout",
+    "do not text", "don't text", "dont text", "do not contact", "don't contact", "dont contact",
+    "lose my number", "leave me alone", "no more texts", "revoke",
 ]
 WRONG_NUMBER_PHRASES = [
     "wrong number", "wrong person", "don't own", "dont own", "do not own",
@@ -107,4 +107,4 @@ POSITIVE_PHRASES = [
     "make an offer", "make me an offer", "your offer", "price", "depends",
     "call me", "possibly", "thinking about it", "open to", "what's your number",
 ]
-HELP_EXACT = ["help", "info"]
+HELP_PHRASES = ["help"]

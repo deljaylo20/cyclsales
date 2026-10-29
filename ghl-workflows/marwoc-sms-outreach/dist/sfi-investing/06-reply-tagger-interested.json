@@ -1,0 +1,197 @@
+{
+  "_id": "c0f54856-ba5c-5a4d-a909-5c75945dbeb3",
+  "locationId": "REPLACE_LOCATION_ID",
+  "name": "MARWOC | 06 Reply Tagger: Interested",
+  "status": "draft",
+  "version": 1,
+  "dataVersion": 1,
+  "allowMultiple": true,
+  "timezone": "account",
+  "removeContactFromLastStep": true,
+  "stopOnResponse": false,
+  "autoMarkAsRead": false,
+  "type": "workflow",
+  "parentId": null,
+  "deleted": false,
+  "allowMultipleOpportunity": true,
+  "creationSource": "builder",
+  "originType": "user",
+  "eventStartDate": null,
+  "window": null,
+  "workflowNote": null,
+  "id": "c0f54856-ba5c-5a4d-a909-5c75945dbeb3",
+  "workflowData": {
+    "templates": [
+      {
+        "id": "d9b6d84a-5652-534b-9a29-bbb8ae0e30da",
+        "order": 0,
+        "name": "From outreach and not suppressed?",
+        "type": "if_else",
+        "attributes": {
+          "operator": "and",
+          "segments": [],
+          "if": true,
+          "conditionName": "From outreach and not suppressed?",
+          "branches": [
+            {
+              "id": "c971cf61-e431-5787-9a85-4fb0c201b46d",
+              "name": "Yes",
+              "segments": [
+                {
+                  "__segmentId": "a36def33-5e04-5126-95d1-09a79ba670fa",
+                  "operator": "and",
+                  "conditions": [
+                    {
+                      "conditionType": "contact_detail",
+                      "conditionSubType": "tags",
+                      "conditionOperator": "index-of-true",
+                      "conditionValue": [
+                        "sms-drip-active",
+                        "sms-drip-complete-no-reply",
+                        "sms-replied"
+                      ],
+                      "__customFieldType__": "standard",
+                      "__conditionId": "de54a54a-51ac-55b5-a7cf-4e29f3bb0a90",
+                      "ifElseNodeId": "",
+                      "isWait": false
+                    },
+                    {
+                      "conditionType": "contact_detail",
+                      "conditionSubType": "tags",
+                      "conditionOperator": "index-of-false",
+                      "conditionValue": [
+                        "dnc-permanent",
+                        "sms-not-interested"
+                      ],
+                      "__customFieldType__": "standard",
+                      "__conditionId": "cae866a4-00cb-5fec-87b8-a8292e15be45",
+                      "ifElseNodeId": "",
+                      "isWait": false
+                    }
+                  ]
+                }
+              ],
+              "operator": "and",
+              "showErrors": false,
+              "branchNameError": "Branch name cannot be empty!"
+            }
+          ],
+          "version": 2
+        },
+        "cat": "conditions",
+        "nodeType": "condition-node",
+        "next": [
+          "c971cf61-e431-5787-9a85-4fb0c201b46d",
+          "b1f662d0-65ef-5d2c-ab07-39fadc905e16"
+        ]
+      },
+      {
+        "id": "c971cf61-e431-5787-9a85-4fb0c201b46d",
+        "parent": "d9b6d84a-5652-534b-9a29-bbb8ae0e30da",
+        "parentKey": "d9b6d84a-5652-534b-9a29-bbb8ae0e30da",
+        "order": 1,
+        "name": "Yes",
+        "type": "if_else",
+        "cat": "conditions",
+        "attributes": {
+          "if": false,
+          "conditionName": "Condition",
+          "operator": "and",
+          "branches": []
+        },
+        "sibling": [
+          "b1f662d0-65ef-5d2c-ab07-39fadc905e16"
+        ],
+        "comments": [],
+        "nodeType": "branch-yes",
+        "next": "5cb1932d-6dbd-5b74-8d2f-0bba91995619"
+      },
+      {
+        "id": "5cb1932d-6dbd-5b74-8d2f-0bba91995619",
+        "order": 2,
+        "name": "Add tag: sms-interested",
+        "type": "add_contact_tag",
+        "parent": "c971cf61-e431-5787-9a85-4fb0c201b46d",
+        "parentKey": "c971cf61-e431-5787-9a85-4fb0c201b46d",
+        "attributes": {
+          "tags": [
+            "sms-interested"
+          ]
+        }
+      },
+      {
+        "id": "b1f662d0-65ef-5d2c-ab07-39fadc905e16",
+        "parent": "d9b6d84a-5652-534b-9a29-bbb8ae0e30da",
+        "parentKey": "d9b6d84a-5652-534b-9a29-bbb8ae0e30da",
+        "order": 1,
+        "name": "None",
+        "type": "if_else",
+        "cat": "conditions",
+        "attributes": {
+          "else": true
+        },
+        "sibling": [
+          "c971cf61-e431-5787-9a85-4fb0c201b46d"
+        ],
+        "nodeType": "branch-no"
+      }
+    ]
+  },
+  "scheduledPauseDates": [],
+  "_triggers": [
+    {
+      "id": "e4af20b765805b0b82ae",
+      "deleted": false,
+      "active": true,
+      "actions": [
+        {
+          "workflow_id": "c0f54856-ba5c-5a4d-a909-5c75945dbeb3",
+          "type": "add_to_workflow"
+        }
+      ],
+      "conditions": [
+        {
+          "operator": "==",
+          "field": "message.type",
+          "value": 2,
+          "title": "Reply channel",
+          "type": "select"
+        },
+        {
+          "operator": "string-contains-any-of",
+          "field": "message.body",
+          "value": [
+            "yes",
+            "yeah",
+            "yep",
+            "sure",
+            "maybe",
+            "how much",
+            "what would you",
+            "make an offer",
+            "make me an offer",
+            "your offer",
+            "price",
+            "depends",
+            "call me",
+            "possibly",
+            "thinking about it",
+            "open to",
+            "what's your number"
+          ],
+          "title": "Contains phrase",
+          "type": "string",
+          "id": "message-contains-phrase"
+        }
+      ],
+      "type": "customer_reply",
+      "masterType": "highlevel",
+      "workflow_id": "c0f54856-ba5c-5a4d-a909-5c75945dbeb3",
+      "location_id": "REPLACE_LOCATION_ID",
+      "name": "Customer Replied",
+      "belongs_to": "workflow",
+      "schedule_config": {},
+      "last_conditions_change_at": ""
+    }
+  ]
+}

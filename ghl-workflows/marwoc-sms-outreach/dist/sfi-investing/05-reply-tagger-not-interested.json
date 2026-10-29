@@ -1,0 +1,213 @@
+{
+  "_id": "5d99330a-db2b-5f8c-9a16-e0c1d17c3ded",
+  "locationId": "REPLACE_LOCATION_ID",
+  "name": "MARWOC | 05 Reply Tagger: Not Interested / Wrong Number",
+  "status": "draft",
+  "version": 1,
+  "dataVersion": 1,
+  "allowMultiple": true,
+  "timezone": "account",
+  "removeContactFromLastStep": true,
+  "stopOnResponse": false,
+  "autoMarkAsRead": false,
+  "type": "workflow",
+  "parentId": null,
+  "deleted": false,
+  "allowMultipleOpportunity": true,
+  "creationSource": "builder",
+  "originType": "user",
+  "eventStartDate": null,
+  "window": null,
+  "workflowNote": null,
+  "id": "5d99330a-db2b-5f8c-9a16-e0c1d17c3ded",
+  "workflowData": {
+    "templates": [
+      {
+        "id": "c4a31953-f4c2-56d2-9b22-7a06f229fe43",
+        "order": 0,
+        "name": "From outreach?",
+        "type": "if_else",
+        "attributes": {
+          "operator": "and",
+          "segments": [],
+          "if": true,
+          "conditionName": "From outreach?",
+          "branches": [
+            {
+              "id": "60a01a74-7af3-520c-97d7-eed535e7aefb",
+              "name": "Yes",
+              "segments": [
+                {
+                  "__segmentId": "5584ad73-a873-5a38-84c4-855506f16de9",
+                  "operator": "and",
+                  "conditions": [
+                    {
+                      "conditionType": "contact_detail",
+                      "conditionSubType": "tags",
+                      "conditionOperator": "index-of-true",
+                      "conditionValue": [
+                        "sms-drip-active",
+                        "sms-drip-complete-no-reply",
+                        "sms-replied"
+                      ],
+                      "__customFieldType__": "standard",
+                      "__conditionId": "4f1664fd-5399-5221-bdbd-95c8559ce68d",
+                      "ifElseNodeId": "",
+                      "isWait": false
+                    }
+                  ]
+                }
+              ],
+              "operator": "and",
+              "showErrors": false,
+              "branchNameError": "Branch name cannot be empty!"
+            }
+          ],
+          "version": 2
+        },
+        "cat": "conditions",
+        "nodeType": "condition-node",
+        "next": [
+          "60a01a74-7af3-520c-97d7-eed535e7aefb",
+          "4b665637-6037-5201-aa2b-ba1a0b258b49"
+        ]
+      },
+      {
+        "id": "60a01a74-7af3-520c-97d7-eed535e7aefb",
+        "parent": "c4a31953-f4c2-56d2-9b22-7a06f229fe43",
+        "parentKey": "c4a31953-f4c2-56d2-9b22-7a06f229fe43",
+        "order": 1,
+        "name": "Yes",
+        "type": "if_else",
+        "cat": "conditions",
+        "attributes": {
+          "if": false,
+          "conditionName": "Condition",
+          "operator": "and",
+          "branches": []
+        },
+        "sibling": [
+          "4b665637-6037-5201-aa2b-ba1a0b258b49"
+        ],
+        "comments": [],
+        "nodeType": "branch-yes",
+        "next": "7ce200f7-e6b9-5570-8d83-95dbe13ab16a"
+      },
+      {
+        "id": "7ce200f7-e6b9-5570-8d83-95dbe13ab16a",
+        "order": 2,
+        "name": "Add tag: sms-not-interested",
+        "type": "add_contact_tag",
+        "parent": "60a01a74-7af3-520c-97d7-eed535e7aefb",
+        "parentKey": "60a01a74-7af3-520c-97d7-eed535e7aefb",
+        "attributes": {
+          "tags": [
+            "sms-not-interested"
+          ]
+        },
+        "next": "885f6425-f770-5677-bd8f-3bfc505a0b0f"
+      },
+      {
+        "id": "885f6425-f770-5677-bd8f-3bfc505a0b0f",
+        "order": 3,
+        "name": "DND: SMS only",
+        "type": "dnd_contact",
+        "parent": "60a01a74-7af3-520c-97d7-eed535e7aefb",
+        "parentKey": "7ce200f7-e6b9-5570-8d83-95dbe13ab16a",
+        "attributes": {
+          "type": "dnd_contact",
+          "dnd_contact": "enable_specific",
+          "specific_channels": [
+            "SMS"
+          ]
+        },
+        "next": "d6ef5d84-5e2d-5dc9-92a0-d05070bfa76c"
+      },
+      {
+        "id": "d6ef5d84-5e2d-5dc9-92a0-d05070bfa76c",
+        "order": 4,
+        "name": "Note: not interested / wrong number",
+        "type": "add_notes",
+        "parent": "60a01a74-7af3-520c-97d7-eed535e7aefb",
+        "parentKey": "885f6425-f770-5677-bd8f-3bfc505a0b0f",
+        "attributes": {
+          "html": "SMS suppressed. Seller replied: \"{{message.body}}\"",
+          "type": "add_notes"
+        }
+      },
+      {
+        "id": "4b665637-6037-5201-aa2b-ba1a0b258b49",
+        "parent": "c4a31953-f4c2-56d2-9b22-7a06f229fe43",
+        "parentKey": "c4a31953-f4c2-56d2-9b22-7a06f229fe43",
+        "order": 1,
+        "name": "None",
+        "type": "if_else",
+        "cat": "conditions",
+        "attributes": {
+          "else": true
+        },
+        "sibling": [
+          "60a01a74-7af3-520c-97d7-eed535e7aefb"
+        ],
+        "nodeType": "branch-no"
+      }
+    ]
+  },
+  "scheduledPauseDates": [],
+  "_triggers": [
+    {
+      "id": "7fb6f80e14c351a583f8",
+      "deleted": false,
+      "active": true,
+      "actions": [
+        {
+          "workflow_id": "5d99330a-db2b-5f8c-9a16-e0c1d17c3ded",
+          "type": "add_to_workflow"
+        }
+      ],
+      "conditions": [
+        {
+          "operator": "==",
+          "field": "message.type",
+          "value": 2,
+          "title": "Reply channel",
+          "type": "select"
+        },
+        {
+          "operator": "string-contains-any-of",
+          "field": "message.body",
+          "value": [
+            "not interested",
+            "no thanks",
+            "no thank you",
+            "not selling",
+            "not for sale",
+            "already sold",
+            "sold it",
+            "not looking to sell",
+            "never selling",
+            "wrong number",
+            "wrong person",
+            "don't own",
+            "dont own",
+            "do not own",
+            "never owned",
+            "not my house",
+            "not my property"
+          ],
+          "title": "Contains phrase",
+          "type": "string",
+          "id": "message-contains-phrase"
+        }
+      ],
+      "type": "customer_reply",
+      "masterType": "highlevel",
+      "workflow_id": "5d99330a-db2b-5f8c-9a16-e0c1d17c3ded",
+      "location_id": "REPLACE_LOCATION_ID",
+      "name": "Customer Replied",
+      "belongs_to": "workflow",
+      "schedule_config": {},
+      "last_conditions_change_at": ""
+    }
+  ]
+}
